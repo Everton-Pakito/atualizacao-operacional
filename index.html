@@ -1,17 +1,12 @@
+
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Atualização Operacional</title>
-  <link rel="stylesheet" href="padrao_css_sistema.css">
-  <link rel="manifest" href="manifest.json">
+  <link rel="stylesheet" href="padrao_css_sistema.css" />
   <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js');
-      });
-    }
     function ajustarHora() {
       const now = new Date();
       now.setMinutes(0, 0, 0);
@@ -57,7 +52,10 @@
 </head>
 <body>
   <div class="container">
-    <div class="header"><h1>📊📊📊📊📊📊📊</h1><p>Atualização Operacional</p></div>
+    <div class="header">
+      <h1>📊📊📊📊📊📊📊</h1>
+      <p>Atualização Operacional</p>
+    </div>
     <div class="content">
       <div class="section">
         <div class="form-group">
@@ -67,9 +65,7 @@
           <div class="input-group"><label>Saída de CVs (Usina)</label><input type="number" step="0.01" id="cv_saida"></div>
           <div class="input-group"><label>Colheita Carregamento Hora</label><input type="number" step="0.01" id="colheita"></div>
           <div class="input-group"><label>Raio Médio (Km)</label><input type="number" step="0.01" id="raio"></div>
-          <div class="input-group"><label>Rotação Média na Usina</label><input type="number" step="1" id="rotacao">
-            <select id="fracao"><option value="">-</option><option value="1/4">1/4</option><option value="1/2">1/2</option><option value="3/4">3/4</option></select>
-          </div>
+          <div class="input-group"><label>Rotação Média na Usina</label><input type="number" step="1" id="rotacao"><select id="fracao"><option value="">-</option><option value="1/4">1/4</option><option value="1/2">1/2</option><option value="3/4">3/4</option></select></div>
           <div class="input-group"><label>Conjuntos Carregados</label><input type="number" step="0.01" id="conjuntos"></div>
           <div class="input-group"><label>Densidade Média</label><input type="number" step="0.01" id="densidade"></div>
           <div class="input-group"><label>Veículos em Manutenção</label><input type="number" step="1" id="veiculos_manutencao" onchange="toggleManutencaoFields()"></div>
@@ -78,7 +74,7 @@
         <div class="text-center mt-3"><button class="btn btn-success" onclick="enviarParaWhatsApp()">Enviar via WhatsApp</button></div>
       </div>
     </div>
-    <div class="text-center mt-3 mb-1"><p>Feito com ❤️ por Everton Tezzon Ferreira</p></div>
+    <div class="footer">Feito com ❤️ por Everton Tezzon Ferreira</div>
   </div>
 </body>
 </html>

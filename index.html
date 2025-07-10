@@ -29,21 +29,21 @@
     }
     function enviarParaWhatsApp() {
       let mensagem = '📊 *Atualização Operacional* \n\n';
-      mensagem += `🗓️🕐 *Data/Hora:* ${document.getElementById('atualizacao').value}\n\n`;
-      mensagem += `🧾 *Projeção de Entrega:* ${document.getElementById('projecao').value} Ton\n\n`;
-      mensagem += `➡️ *Entrada de CVs (Usina):* ${document.getElementById('cv_entrada').value}\n\n`;
-      mensagem += `⬅️ *Saída de CVs (Usina):* ${document.getElementById('cv_saida').value}\n\n`;
-      mensagem += `*Colheita Carregamento Hora:* ${document.getElementById('colheita').value}\n\n`;
-      mensagem += `🛣️ *Raio Médio:* ${document.getElementById('raio').value} Km\n\n`;
-      mensagem += `*Rotação Média na Usina:* ${document.getElementById('rotacao').value} ${document.getElementById('fracao').value}\n\n`;
-      mensagem += `🚚 *Conjuntos Carregados:* ${document.getElementById('conjuntos').value}\n\n`;
-      mensagem += `*Densidade Média:* ${document.getElementById('densidade').value}\n\n`;
+      mensagem += `🗓️🕐 *Data/Hora:* *_${document.getElementById('atualizacao').value}_*\n\n`;
+      mensagem += `🧾 *Projeção de Entrega:* *_${document.getElementById('projecao').value} Ton_*\n\n`;
+      mensagem += `➡️ *Entrada de CVs (Usina):* *_${document.getElementById('cv_entrada').value}_*\n\n`;
+      mensagem += `⬅️ *Saída de CVs (Usina):* *_${document.getElementById('cv_saida').value}_*\n\n`;
+      mensagem += `*Colheita Carregamento Hora:* *_${document.getElementById('colheita').value}_*\n\n`;
+      mensagem += `🛣️ *Raio Médio:* *_${document.getElementById('raio').value} Km_*\n\n`;
+      mensagem += `*Rotação Média na Usina:* *_${document.getElementById('rotacao').value} ${document.getElementById('fracao').value}_*\n\n`;
+      mensagem += `🚚 *Conjuntos Carregados:* *_${document.getElementById('conjuntos').value}_*\n\n`;
+      mensagem += `*Densidade Média:* *_${document.getElementById('densidade').value}_*\n\n`;
       const qtdManut = parseInt(document.getElementById('veiculos_manutencao').value) || 0;
-      mensagem += `🚚 *Veículos em Manutenção:* ${qtdManut}\n\n`;
+      mensagem += `🚚 *Veículos em Manutenção:* *_${qtdManut}_*\n\n`;
       for (let i = 0; i < qtdManut; i++) {
         const frota = document.querySelector(`[name='frota_${i}']`).value;
         const descricao = document.querySelector(`[name='descricao_${i}']`).value;
-        mensagem += `- Frota: *${frota}* - ${descricao}\n`;
+        mensagem += `- Frota: *_${frota}_* - *_${descricao}_*\n`;
       }
       window.open(`https://wa.me/?text=${encodeURIComponent(mensagem)}`, '_blank');
     }
@@ -54,7 +54,7 @@
   <div class="container">
     <div class="header">
       <h1>📊Atualização Operacional📊</h1>
-      <p>📊🚚🎋🎍🚀</p>
+      <p>📊🚀🚀🚀</p>
     </div>
     <div class="content">
       <div class="section">

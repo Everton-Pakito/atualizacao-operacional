@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Atualização Operacional</title>
+  <link rel="stylesheet" href="padrao_css_sistema.css" />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#3498db" />
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>📊 Atualização Operacional</h1>
+      <p id="horaAtual"></p>
+    </div>
+    <div class="content">
+      <form id="operacaoForm">
+        <div class="form-group">
+          <div class="input-group">
+            <label>📈 Projeção de Entrega:</label>
+            <input type="text" name="entrega" required />
+          </div>
+          <div class="input-group">
+            <label>➡️ Entrada de CVs (Usina):</label>
+            <input type="text" name="entrada" />
+          </div>
+          <div class="input-group">
+            <label>⬅️ Saída de CVs (Usina):</label>
+            <input type="text" name="saida" />
+          </div>
+          <div class="input-group">
+            <label>🌾 Colheita (Carregamento/Hora):</label>
+            <input type="text" name="colheita" />
+          </div>
+          <div class="input-group">
+            <label>📏 Raio Médio:</label>
+            <input type="text" name="raio" />
+          </div>
+          <div class="input-group">
+            <label>🔄 Rotação Média na Usina:</label>
+            <input type="text" name="rotacao" />
+          </div>
+          <div class="input-group">
+            <label>🚛 Conjuntos Carregados:</label>
+            <input type="text" name="conjuntos" />
+          </div>
+          <div class="input-group">
+            <label>⚖️ Densidade Média:</label>
+            <input type="text" name="densidade" />
+          </div>
+          <div class="input-group">
+            <label>🛠️ Veículos em Manutenção:</label>
+            <input type="number" name="manutencao" id="manutencao" min="0" value="0" onchange="atualizarManutencao()" />
+          </div>
+        </div>
+        <div id="manutencaoCampos" class="form-group"></div>
+        <div class="form-group">
+          <button type="button" class="btn btn-success" onclick="enviarWhatsapp()">📤 Enviar para WhatsApp</button>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

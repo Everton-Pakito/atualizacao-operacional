@@ -7,6 +7,23 @@
   <link rel="stylesheet" href="padrao_css_sistema.css" />
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#3498db" />
+  <style>
+    footer {
+      text-align: center;
+      color: #fff;
+      font-size: 0.9rem;
+      margin-top: 40px;
+      padding: 15px;
+      background: rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(4px);
+    }
+    @media (max-width: 768px) {
+      footer {
+        font-size: 0.8rem;
+        padding: 10px;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
@@ -53,14 +70,20 @@
             <label>🛠️ Veículos em Manutenção:</label>
             <input type="number" name="manutencao" id="manutencao" min="0" value="0" onchange="atualizarManutencao()" />
           </div>
+          <div class="input-group">
+            <label>🆘 Ocorrências em Andamento:</label>
+            <input type="number" name="ocorrencias" id="ocorrencias" min="0" value="0" onchange="atualizarOcorrencias()" />
+          </div>
         </div>
         <div id="manutencaoCampos" class="form-group"></div>
+        <div id="ocorrenciaCampos" class="form-group"></div>
         <div class="form-group">
           <button type="button" class="btn btn-success" onclick="enviarWhatsapp()">📤 Enviar para WhatsApp</button>
         </div>
       </form>
     </div>
   </div>
+  <footer>Feito com ❤️ por Everton Tezzon Ferreira</footer>
   <script src="app.js"></script>
 </body>
 </html>

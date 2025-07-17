@@ -62,6 +62,7 @@ function enviarWhatsapp() {
   mensagem += `🔄 Rotação Média na Usina:\n${form.rotacao.value} Voltas\n`;
   mensagem += `🚛 Conjuntos Carregados: ${form.conjuntos.value}\n`;
   mensagem += `⚖️ Densidade Média: ${form.densidade.value}\n`;
+  mensagem += `━━━━━━━━━━━━━━`;
   mensagem += `🛠️ Veículos em Manutenção: ${form.manutencao.value}\n`;
 
   const qtdMan = parseInt(form.manutencao.value);
@@ -70,7 +71,7 @@ function enviarWhatsapp() {
       mensagem += `🚛 Frota: ${form['frota_' + i].value}\n📍 Local: ${form['local_' + i].value}\n🗒️ Descrição: ${form['descricao_' + i].value}\n`;
     }
   }
-
+	mensagem += `━━━━━━━━━━━━━━`;
   mensagem += `🆘 Ocorrências em Andamento: ${form.ocorrencias.value}\n`;
 
   const qtdOc = parseInt(form.ocorrencias.value);
@@ -79,8 +80,6 @@ function enviarWhatsapp() {
       mensagem += `⚠️ Tipo: ${form['tipo_' + i].value}\n📍 Local: ${form['localOc_' + i].value}\n🗒️ Descrição: ${form['descOc_' + i].value}\n`;
     }
   }
-
-  mensagem += `━━━━━━━━━━━━━━`;
 
   const link = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
   window.open(link, "_blank");

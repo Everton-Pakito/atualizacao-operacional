@@ -31,6 +31,7 @@
       <h1>📊 Atualização Operacional</h1>
       <p id="horaAtual"></p>
     </div>
+
     <div class="content">
       <form id="operacaoForm">
         <div class="form-group">
@@ -42,17 +43,27 @@
           <div class="input-group"><label>🔄 Rotação Média na Usina (Voltas):</label><input type="number" step="0.01" name="rotacao" /></div>
           <div class="input-group"><label>🚛 Conjuntos Carregados:</label><input type="number" name="conjuntos" /></div>
           <div class="input-group"><label>⚖️ Densidade Média:</label><input type="number" name="densidade" /></div>
-          <div class="input-group"><label>🛠️ Veículos em Manutenção:</label><input type="number" name="manutencao" id="manutencao" min="0" value="0" onchange="atualizarManutencao()" /></div>
-          <div class="input-group"><label>🆘 Ocorrências em Andamento:</label><input type="number" name="ocorrencias" id="ocorrencias" min="0" value="0" onchange="atualizarOcorrencias()" /></div>
+
+          <!-- 🛠️ Manutenção -->
+          <div class="input-group"><label>🛠️ Veículos em Manutenção:</label>
+            <input type="number" name="manutencao" id="manutencao" min="0" value="0" onchange="atualizarManutencao()" />
+          </div>
+          <div id="manutencaoCampos" class="form-group"></div>
+
+          <!-- 🆘 Ocorrência -->
+          <div class="input-group"><label>🆘 Ocorrências em Andamento:</label>
+            <input type="number" name="ocorrencias" id="ocorrencias" min="0" value="0" onchange="atualizarOcorrencias()" />
+          </div>
+          <div id="ocorrenciaCampos" class="form-group"></div>
         </div>
-        <div id="manutencaoCampos" class="form-group"></div>
-        <div id="ocorrenciaCampos" class="form-group"></div>
+
         <div class="form-group">
           <button type="button" class="btn btn-success" onclick="enviarWhatsapp()">📤 Enviar para WhatsApp</button>
         </div>
       </form>
     </div>
   </div>
+
   <footer>Feito com ❤️ por Everton Tezzon Ferreira</footer>
   <script src="app.js"></script>
 </body>

@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -35,21 +34,19 @@
     <div class="content">
       <form id="operacaoForm">
         <div class="form-group">
-          <div class="input-group"><label>📈 Projeção de Entrega:</label><input type="text" name="entrega" required /></div>
-          <div class="input-group"><label>➡️ Entrada de CVs (Usina):</label><input type="text" name="entrada" /></div>
-          <div class="input-group"><label>⬅️ Saída de CVs (Usina):</label><input type="text" name="saida" /></div>
-          <div class="input-group"><label>🌾 Colheita (Carregamento/Hora):</label><input type="text" name="colheita" /></div>
-          <div class="input-group"><label>📏 Raio Médio:</label><input type="text" name="raio" /></div>
-          <div class="input-group"><label>🔄 Rotação Média na Usina:</label><input type="text" name="rotacao" /></div>
-          <div class="input-group"><label>🚛 Conjuntos Carregados:</label><input type="text" name="conjuntos" /></div>
-          <div class="input-group"><label>⚖️ Densidade Média:</label><input type="text" name="densidade" /></div>
-
+          <div class="input-group"><label>📈 Projeção de Entrega (Ton):</label><input type="number" name="entrega" required /></div>
+          <div class="input-group"><label>➡️ Entrada de CVs (Usina):</label><input type="number" name="entrada" id="entrada" oninput="calcularColheita()" /></div>
+          <div class="input-group"><label>⬅️ Saída de CVs (Usina):</label><input type="number" name="saida" id="saida" oninput="calcularColheita()" /></div>
+          <div class="input-group"><label>🌾 Colheita (Carregamento/Hora):</label><input type="text" name="colheita" id="colheita" readonly /></div>
+          <div class="input-group"><label>📏 Raio Médio (Km):</label><input type="number" name="raio" /></div>
+          <div class="input-group"><label>🔄 Rotação Média na Usina (Voltas):</label><input type="number" step="0.01" name="rotacao" /></div>
+          <div class="input-group"><label>🚛 Conjuntos Carregados:</label><input type="number" name="conjuntos" /></div>
+          <div class="input-group"><label>⚖️ Densidade Média:</label><input type="number" name="densidade" /></div>
           <div class="input-group"><label>🛠️ Veículos em Manutenção:</label><input type="number" name="manutencao" id="manutencao" min="0" value="0" onchange="atualizarManutencao()" /></div>
-          <div id="manutencaoCampos" class="form-group"></div>
-
           <div class="input-group"><label>🆘 Ocorrências em Andamento:</label><input type="number" name="ocorrencias" id="ocorrencias" min="0" value="0" onchange="atualizarOcorrencias()" /></div>
-          <div id="ocorrenciaCampos" class="form-group"></div>
         </div>
+        <div id="manutencaoCampos" class="form-group"></div>
+        <div id="ocorrenciaCampos" class="form-group"></div>
         <div class="form-group">
           <button type="button" class="btn btn-success" onclick="enviarWhatsapp()">📤 Enviar para WhatsApp</button>
         </div>

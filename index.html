@@ -18,10 +18,7 @@
       backdrop-filter: blur(4px);
     }
     @media (max-width: 768px) {
-      footer {
-        font-size: 0.8rem;
-        padding: 10px;
-      }
+      footer { font-size: 0.8rem; padding: 10px; }
     }
     .card {
       background: rgba(255,255,255,0.05);
@@ -69,12 +66,10 @@
           <div class="input-group"><label>⚖️ Densidade Média:</label><input type="number" name="densidade" /></div>
         </div>
 
-        <!-- 🛠️ Manutenção -->
         <h3>🛠️ Veículos em Manutenção</h3>
         <button type="button" class="add-button" onclick="adicionarItem('manutencao')">➕ Adicionar Manutenção</button>
         <div id="manutencaoCampos" class="form-group"></div>
 
-        <!-- 🆘 Ocorrências -->
         <h3>🆘 Ocorrências em Andamento</h3>
         <button type="button" class="add-button" onclick="adicionarItem('ocorrencia')">➕ Adicionar Ocorrência</button>
         <div id="ocorrenciaCampos" class="form-group"></div>

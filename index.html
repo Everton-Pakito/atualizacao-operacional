@@ -23,6 +23,30 @@
         padding: 10px;
       }
     }
+    .card {
+      background: rgba(255,255,255,0.05);
+      padding: 10px;
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+    .card button {
+      margin-top: 5px;
+      background: #d9534f;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+    .add-button {
+      background: #5cb85c;
+      color: white;
+      border: none;
+      padding: 6px 10px;
+      margin: 10px 0;
+      cursor: pointer;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -43,19 +67,17 @@
           <div class="input-group"><label>🔄 Rotação Média na Usina (Voltas):</label><input type="number" step="0.01" name="rotacao" /></div>
           <div class="input-group"><label>🚛 Conjuntos Carregados:</label><input type="number" name="conjuntos" /></div>
           <div class="input-group"><label>⚖️ Densidade Média:</label><input type="number" name="densidade" /></div>
-
-          <!-- 🛠️ Manutenção -->
-          <div class="input-group"><label>🛠️ Veículos em Manutenção:</label>
-            <input type="number" name="manutencao" id="manutencao" min="0" value="0" onchange="atualizarManutencao()" />
-          </div>
-          <div id="manutencaoCampos" class="form-group"></div>
-
-          <!-- 🆘 Ocorrência -->
-          <div class="input-group"><label>🆘 Ocorrências em Andamento:</label>
-            <input type="number" name="ocorrencias" id="ocorrencias" min="0" value="0" onchange="atualizarOcorrencias()" />
-          </div>
-          <div id="ocorrenciaCampos" class="form-group"></div>
         </div>
+
+        <!-- 🛠️ Manutenção -->
+        <h3>🛠️ Veículos em Manutenção</h3>
+        <button type="button" class="add-button" onclick="adicionarItem('manutencao')">➕ Adicionar Manutenção</button>
+        <div id="manutencaoCampos" class="form-group"></div>
+
+        <!-- 🆘 Ocorrências -->
+        <h3>🆘 Ocorrências em Andamento</h3>
+        <button type="button" class="add-button" onclick="adicionarItem('ocorrencia')">➕ Adicionar Ocorrência</button>
+        <div id="ocorrenciaCampos" class="form-group"></div>
 
         <div class="form-group">
           <button type="button" class="btn btn-success" onclick="enviarWhatsapp()">📤 Enviar para WhatsApp</button>

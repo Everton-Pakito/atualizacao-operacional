@@ -44,6 +44,28 @@
       cursor: pointer;
       border-radius: 5px;
     }
+    .input-helper {
+      font-size: 0.8rem;
+      color: #666;
+      margin-top: 2px;
+      font-style: italic;
+    }
+    .rotacao-input {
+      position: relative;
+    }
+    .rotacao-input::after {
+      content: "Ex: 6 1/4, 5,5 ou 5.75";
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 0.7rem;
+      color: #999;
+      pointer-events: none;
+      background: white;
+      padding: 2px 5px;
+      border-radius: 3px;
+    }
   </style>
 </head>
 <body>
@@ -56,14 +78,45 @@
     <div class="content">
       <form id="operacaoForm">
         <div class="form-group">
-          <div class="input-group"><label>📈 Projeção de Entrega (Ton):</label><input type="number" name="entrega" required /></div>
-          <div class="input-group"><label>➡️ Entrada de CVs (Usina):</label><input type="number" name="entrada" id="entrada" oninput="calcularColheita()" /></div>
-          <div class="input-group"><label>⬅️ Saída de CVs (Usina):</label><input type="number" name="saida" id="saida" oninput="calcularColheita()" /></div>
-          <div class="input-group"><label>🌾 Colheita (Carregamento/Hora):</label><input type="text" name="colheita" id="colheita" readonly /></div>
-          <div class="input-group"><label>📏 Raio Médio (Km):</label><input type="number" name="raio" /></div>
-          <div class="input-group"><label>🔄 Rotação Média na Usina (Voltas):</label><input type="number" step="0.01" name="rotacao" /></div>
-          <div class="input-group"><label>🚛 Conjuntos Carregados:</label><input type="number" name="conjuntos" /></div>
-          <div class="input-group"><label>⚖️ Densidade Média:</label><input type="number" name="densidade" /></div>
+          <div class="input-group">
+            <label>📈 Projeção de Entrega (Ton):</label>
+            <input type="text" name="entrega" required />
+            <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
+          </div>
+          <div class="input-group">
+            <label>➡️ Entrada de CVs (Usina):</label>
+            <input type="text" name="entrada" id="entrada" oninput="calcularColheita()" />
+            <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
+          </div>
+          <div class="input-group">
+            <label>⬅️ Saída de CVs (Usina):</label>
+            <input type="text" name="saida" id="saida" oninput="calcularColheita()" />
+            <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
+          </div>
+          <div class="input-group">
+            <label>🌾 Colheita (Carregamento/Hora):</label>
+            <input type="text" name="colheita" id="colheita" readonly />
+          </div>
+          <div class="input-group">
+            <label>📏 Raio Médio (Km):</label>
+            <input type="text" name="raio" />
+            <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
+          </div>
+          <div class="input-group rotacao-input">
+            <label>🔄 Rotação Média na Usina (Voltas):</label>
+            <input type="text" name="rotacao" placeholder="Ex: 6 1/4 ou 5,75" />
+            <div class="input-helper">Aceita frações (6 1/4) ou decimais (5,75 ou 5.75)</div>
+          </div>
+          <div class="input-group">
+            <label>🚛 Conjuntos Carregados:</label>
+            <input type="text" name="conjuntos" />
+            <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
+          </div>
+          <div class="input-group">
+            <label>⚖️ Densidade Média:</label>
+            <input type="text" name="densidade" />
+            <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
+          </div>
         </div>
 
         <h3>🛠️ Veículos em Manutenção</h3>

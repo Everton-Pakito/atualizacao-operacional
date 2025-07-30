@@ -169,24 +169,25 @@ function obterValorFormatado(elemento) {
 function enviarWhatsapp() {
   const form = document.forms['operacaoForm'];
   const dataHora = document.getElementById('horaAtual').textContent;
-  let mensagem = `📊 ${dataHora}\\n━━━━━━━━━━━━━━\\n`;
-  mensagem += `📈 Projeção de Entrega: ${obterValorFormatado(form.entrega)} Ton\\n`;
-  mensagem += `➡️ Entrada de CVs (Usina): ${obterValorFormatado(form.entrada)}\\n`;
-  mensagem += `⬅️ Saída de CVs (Usina): ${obterValorFormatado(form.saida)}\\n`;
-  mensagem += `🌾 Colheita (Carregamento/Hora): ${form.colheita.value}\\n`;
-  mensagem += `📏 Raio Médio: ${obterValorFormatado(form.raio)} Km\\n`;
-  mensagem += `🔄 Rotação Média na Usina: ${obterValorFormatado(form.rotacao)} Voltas\\n`;
-  mensagem += `🚛 Conjuntos Carregados: ${obterValorFormatado(form.conjuntos)}\\n`;
-  mensagem += `⚖️ Densidade Média: ${obterValorFormatado(form.densidade)}\\n`;
-  mensagem += `🛠️ Veículos em Manutenção: ${manutencaoData.length}\\n`;
+  let mensagem = `📊 ${dataHora}\n━━━━━━━━━━━━━━\n`;
+  mensagem += `📈 Projeção de Entrega: ${obterValorFormatado(form.entrega)} Ton\n`;
+  mensagem += `➡️ Entrada de CVs (Usina): ${obterValorFormatado(form.entrada)}\n`;
+  mensagem += `⬅️ Saída de CVs (Usina): ${obterValorFormatado(form.saida)}\n`;
+  mensagem += `🌾 Colheita (Carregamento/Hora): ${form.colheita.value}\n`;
+  mensagem += `📏 Raio Médio: ${obterValorFormatado(form.raio)} Km\n`;
+  mensagem += `🔄 Rotação Média na Usina: ${obterValorFormatado(form.rotacao)} Voltas\n`;
+  mensagem += `🚛 Conjuntos Carregados: ${obterValorFormatado(form.conjuntos)}\n`;
+  mensagem += `⚖️ Densidade Média: ${obterValorFormatado(form.densidade)}\n`;
+  mensagem += `━━━━━━━━━━━━━━\n`;
+  mensagem += `🛠️ Veículos em Manutenção: ${manutencaoData.length}\n`;
   manutencaoData.forEach(item => {
-    mensagem += `🚛 Frota: ${item.frota}\\n📍 Local: ${item.local}\\n🔧 Descrição: ${item.descricao}\\n🗒️ Status: ${item.status}\\n`;
+    mensagem += `🚛 Frota: ${item.frota}\n📍 Local: ${item.local}\n🔧 Descrição: ${item.descricao}\n🗒️ Status: ${item.status}\n`;
   });
-  mensagem += `━━━━━━━━━━━━━━\\n🆘 Ocorrências em Andamento: ${ocorrenciaData.length}\\n`;
+  mensagem += `━━━━━━━━━━━━━━\n🆘 Ocorrências em Andamento: ${ocorrenciaData.length}\n`;
   ocorrenciaData.forEach(item => {
-    mensagem += `🚛⚠️ Frota: ${item.frota}\\n📍 Local: ${item.local}\\n🔧 Descrição: ${item.descricao}\\n🗒️ Status: ${item.status}\\n`;
+    mensagem += `🚛⚠️ Frota: ${item.frota}\n📍 Local: ${item.local}\n🔧 Descrição: ${item.descricao}\n🗒️ Status: ${item.status}\n`;
   });
-  mensagem += `━━━━━━━━━━━━━━`;
+  mensagem += `━━━━━━━━━━━━━━\n`;
   const link = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
   window.open(link, "_blank");
 }

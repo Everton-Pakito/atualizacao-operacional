@@ -39,10 +39,74 @@ function converterFracaoParaDecimal(valor) {
   return parseFloat(valor.replace(',', '.')) || 0;
 }
 
-// Função para formatar número para exibição
-function formatarNumero(numero) {
-  if (isNaN(numero) || numero === 0) return '';
-  return numero.toFixed(2).replace('.', ',');
+// Função para formatar valor monetário/tonelagem brasileiro
+function formatarTonelagem(valor) {
+  // Remove tudo que não é número
+  let numeros = valor.replace(/\D/g, '');
+  
+  // Se está vazio, retorna vazio
+  if (!numeros) return '';
+  
+  // Converte para número e divide por 100 para ter 2 casas decimais
+  let numero = parseFloat(numeros) / 100;
+  
+  // Formata no padrão brasileiro
+  return numero.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+}
+
+// Função para aplicar máscara de tonelagem em tempo real
+function aplicarMascaraTonelagem(input) {
+  input.addEventListener('input', function(e) {
+    let valor = e.target.value;
+    let posicaoCursor = e.target.selectionStart;
+    let valorAnterior = valor;
+    
+    // Aplica a formatação
+    let valorFormatado = formatarTonelagem(valor);
+    
+    // Atualiza o valor do campo
+    e.target.value = valorFormatado;
+    
+    // Ajusta a posição do cursor
+    let diferencaTamanho = valorFormatado.length - valorAnterior.length;
+    let novaPosicao = posicaoCursor + diferencaTamanho;
+    
+    // Garante que o cursor não saia dos limites
+    if (novaPosicao < 0) novaPosicao = 0;
+    if (novaPosicao > valorFormatado.length) novaPosicao = valorFormatado.length;
+    
+    // Define a nova posição do cursor
+    setTimeout(() => {
+      e.target.setSelectionRange(novaPosicao, novaPosicao);
+    }, 0);
+  });
+  
+  // Ao sair do campo, garante formatação correta
+  input.addEventListener('blur', function(e) {
+    if (e.target.value) {
+      e.target.value = formatarTonelagem(e.target.value);
+    }
+  });
+}
+
+// Função para obter valor numérico da tonelagem formatada
+function obterValorTonelagem(valorFormatado) {
+  if (!valorFormatado) return '';
+  
+  // Remove pontos e substitui vírgula por ponto
+  let numero = valorFormatado.replace(/\./g, '').replace(',', '.');
+  let valor = parseFloat(numero);
+  
+  if (isNaN(valor)) return '';
+  
+  // Retorna formatado para exibição
+  return valor.toLocaleString('pt-BR', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
 }
 
 function calcularColheita() {
@@ -149,9 +213,19 @@ function renderizarOcorrencias() {
   });
 }
 
+// Função para formatar número para exibição (mantida para outros campos)
+function formatarNumero(numero) {
+  if (isNaN(numero) || numero === 0) return '';
+  return numero.toFixed(2).replace('.', ',');
+}
+
 function obterValorFormatado(elemento) {
   const valor = elemento.value;
-  if (elemento.name === 'rotacao') {
+  
+  // Para o campo de projeção de entrega, retorna o valor já formatado
+  if (elemento.name === 'entrega') {
+    return valor; // Já está formatado
+  } else if (elemento.name === 'rotacao') {
     // Para rotação, retorna o valor original se contém fração, senão formata
     if (/\//.test(valor)) {
       return valor;
@@ -169,25 +243,24 @@ function obterValorFormatado(elemento) {
 function enviarWhatsapp() {
   const form = document.forms['operacaoForm'];
   const dataHora = document.getElementById('horaAtual').textContent;
-  let mensagem = `📊 ${dataHora}\n━━━━━━━━━━━━━━\n`;
-  mensagem += `📈 Projeção de Entrega: ${obterValorFormatado(form.entrega)} Ton\n`;
-  mensagem += `➡️ Entrada de CVs (Usina): ${obterValorFormatado(form.entrada)}\n`;
-  mensagem += `⬅️ Saída de CVs (Usina): ${obterValorFormatado(form.saida)}\n`;
-  mensagem += `🌾 Colheita (Carregamento/Hora): ${form.colheita.value}\n`;
-  mensagem += `📏 Raio Médio: ${obterValorFormatado(form.raio)} Km\n`;
-  mensagem += `🔄 Rotação Média na Usina: ${obterValorFormatado(form.rotacao)} Voltas\n`;
-  mensagem += `🚛 Conjuntos Carregados: ${obterValorFormatado(form.conjuntos)}\n`;
-  mensagem += `⚖️ Densidade Média: ${obterValorFormatado(form.densidade)}\n`;
-  mensagem += `━━━━━━━━━━━━━━\n`;
-  mensagem += `🛠️ Veículos em Manutenção: ${manutencaoData.length}\n`;
+  let mensagem = `📊 ${dataHora}\\n━━━━━━━━━━━━━━\\n`;
+  mensagem += `📈 Projeção de Entrega: ${obterValorFormatado(form.entrega)} Ton\\n`;
+  mensagem += `➡️ Entrada de CVs (Usina): ${obterValorFormatado(form.entrada)}\\n`;
+  mensagem += `⬅️ Saída de CVs (Usina): ${obterValorFormatado(form.saida)}\\n`;
+  mensagem += `🌾 Colheita (Carregamento/Hora): ${form.colheita.value}\\n`;
+  mensagem += `📏 Raio Médio: ${obterValorFormatado(form.raio)} Km\\n`;
+  mensagem += `🔄 Rotação Média na Usina: ${obterValorFormatado(form.rotacao)} Voltas\\n`;
+  mensagem += `🚛 Conjuntos Carregados: ${obterValorFormatado(form.conjuntos)}\\n`;
+  mensagem += `⚖️ Densidade Média: ${obterValorFormatado(form.densidade)}\\n`;
+  mensagem += `🛠️ Veículos em Manutenção: ${manutencaoData.length}\\n`;
   manutencaoData.forEach(item => {
-    mensagem += `🚛 Frota: ${item.frota}\n📍 Local: ${item.local}\n🔧 Descrição: ${item.descricao}\n🗒️ Status: ${item.status}\n`;
+    mensagem += `🚛 Frota: ${item.frota}\\n📍 Local: ${item.local}\\n🔧 Descrição: ${item.descricao}\\n🗒️ Status: ${item.status}\\n`;
   });
-  mensagem += `━━━━━━━━━━━━━━\n🆘 Ocorrências em Andamento: ${ocorrenciaData.length}\n`;
+  mensagem += `━━━━━━━━━━━━━━\\n🆘 Ocorrências em Andamento: ${ocorrenciaData.length}\\n`;
   ocorrenciaData.forEach(item => {
-    mensagem += `🚛⚠️ Frota: ${item.frota}\n📍 Local: ${item.local}\n🔧 Descrição: ${item.descricao}\n🗒️ Status: ${item.status}\n`;
+    mensagem += `🚛⚠️ Frota: ${item.frota}\\n📍 Local: ${item.local}\\n🔧 Descrição: ${item.descricao}\\n🗒️ Status: ${item.status}\\n`;
   });
-  mensagem += `━━━━━━━━━━━━━━\n`;
+  mensagem += `━━━━━━━━━━━━━━`;
   const link = `https://wa.me/?text=${encodeURIComponent(mensagem)}`;
   window.open(link, "_blank");
 }
@@ -198,8 +271,14 @@ window.onload = () => {
   renderizarManutencao();
   renderizarOcorrencias();
   
-  // Aplicar normalização para todos os campos numéricos
-  const camposNumericos = document.querySelectorAll('input[type="number"], input[name="entrada"], input[name="saida"], input[name="entrega"], input[name="raio"], input[name="rotacao"], input[name="conjuntos"], input[name="densidade"]');
+  // Aplicar máscara de tonelagem para o campo de projeção de entrega
+  const campoEntrega = document.querySelector('input[name="entrega"]');
+  if (campoEntrega) {
+    aplicarMascaraTonelagem(campoEntrega);
+  }
+  
+  // Aplicar normalização para outros campos numéricos (exceto entrega)
+  const camposNumericos = document.querySelectorAll('input[name="entrada"], input[name="saida"], input[name="raio"], input[name="rotacao"], input[name="conjuntos"], input[name="densidade"]');
   camposNumericos.forEach(campo => {
     normalizarEntradaNumerica(campo);
   });

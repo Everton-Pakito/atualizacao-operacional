@@ -222,10 +222,7 @@ function formatarNumero(numero) {
 function obterValorFormatado(elemento) {
   const valor = elemento.value;
   
-  // Para o campo de projeção de entrega, retorna o valor já formatado
-  if (elemento.name === 'entrega') {
-    return valor; // Já está formatado
-  } else if (elemento.name === 'rotacao') {
+  if (elemento.name === 'rotacao') {
     // Para rotação, retorna o valor original se contém fração, senão formata
     if (/\//.test(valor)) {
       return valor;
@@ -271,14 +268,8 @@ window.onload = () => {
   renderizarManutencao();
   renderizarOcorrencias();
   
-  // Aplicar máscara de tonelagem para o campo de projeção de entrega
-  const campoEntrega = document.querySelector('input[name="entrega"]');
-  if (campoEntrega) {
-    aplicarMascaraTonelagem(campoEntrega);
-  }
-  
-  // Aplicar normalização para outros campos numéricos (exceto entrega)
-  const camposNumericos = document.querySelectorAll('input[name="entrada"], input[name="saida"], input[name="raio"], input[name="rotacao"], input[name="conjuntos"], input[name="densidade"]');
+  // Aplicar normalização para todos os campos numéricos (incluindo entrega)
+  const camposNumericos = document.querySelectorAll('input[name="entrada"], input[name="saida"], input[name="entrega"], input[name="raio"], input[name="rotacao"], input[name="conjuntos"], input[name="densidade"]');
   camposNumericos.forEach(campo => {
     normalizarEntradaNumerica(campo);
   });

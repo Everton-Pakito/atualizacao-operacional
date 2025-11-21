@@ -3,7 +3,7 @@ function horaArredondada() {
   agora.setMinutes(0, 0, 0);
   const horaFormatada = agora.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
   const dataFormatada = agora.toLocaleDateString('pt-BR');
-  document.getElementById('horaAtual').textContent = `Atualização – ${dataFormatada} às ${horaFormatada}`;
+  document.getElementById('horaAtual').textContent = `Atualização — ${dataFormatada} às ${horaFormatada}`;
 }
 
 // Função para converter fração em decimal
@@ -249,9 +249,11 @@ function enviarWhatsapp() {
 
 ⬅️ Saída de CVs (Usina): *${obterValorFormatado(form.saida)}*
 
+🚛 Retorno Usina: *${obterValorFormatado(form.retorno)}*
+
 🌾 Colheita (Carregamento/Hora): *${form.colheita.value}*
 
-📏 Raio Médio: *${obterValorFormatado(form.raio)} Km*
+📍 Raio Médio: *${obterValorFormatado(form.raio)} Km*
 
 🔄 Rotação Média na Usina: *${obterValorFormatado(form.rotacao)} Voltas*
 
@@ -298,8 +300,8 @@ window.onload = () => {
   renderizarManutencao();
   renderizarOcorrencias();
   
-  // Aplicar normalização para todos os campos numéricos (incluindo entrega)
-  const camposNumericos = document.querySelectorAll('input[name="entrada"], input[name="saida"], input[name="entrega"], input[name="raio"], input[name="rotacao"], input[name="conjuntos"], input[name="densidade"]');
+  // Aplicar normalização para todos os campos numéricos (incluindo retorno)
+  const camposNumericos = document.querySelectorAll('input[name="entrada"], input[name="saida"], input[name="entrega"], input[name="retorno"], input[name="raio"], input[name="rotacao"], input[name="conjuntos"], input[name="densidade"]');
   camposNumericos.forEach(campo => {
     normalizarEntradaNumerica(campo);
   });

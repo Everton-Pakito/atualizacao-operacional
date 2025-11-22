@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Configurar Logo - Prando Transportes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 40px 20px;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+    
+    h1 {
+      color: #2c3e50;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+    
+    .upload-area {
+      border: 3px dashed #3498db;
+      border-radius: 15px;
+      padding: 40px;
+      text-align: center;
+      background: #f8f9fa;
+      margin-bottom: 30px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    
+    .upload-area:hover {
+      background: #e9ecef;
+      border-color: #2980b9;
+    }
+    
+    .upload-area.dragover {
+      background: #d4edda;
+      border-color: #27ae60;
+    }
+    
+    input[type="file"] {
+      display: none;
+    }
+    
+    .preview-area {
+      margin: 30px 0;
+      text-align: center;
+    }
+    
+    .preview-area img {
+      max-width: 100%;
+      max-height: 200px;
+      border-radius: 10px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    .btn {
+      background: linear-gradient(135deg, #27ae60 0%, #229954 100%);
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      border-radius: 10px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+      margin: 10px;
+    }
+    
+    .btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(39, 174, 96, 0.6);
+    }
+    
+    .btn-secondary {
+      background: linear-gradient(135deg, #3498db 0%, #2980b9 100%);
+      box-shadow: 0 4px 15px rgba(52, 152, 219, 0.4);
+    }
+    
+    .btn-secondary:hover {
+      box-shadow: 0 6px 20px rgba(52, 152, 219, 0.6);
+    }
+    
+    .info-box {
+      background: #fff3cd;
+      border-left: 4px solid #f39c12;
+      padding: 20px;
+      border-radius: 8px;
+      margin: 20px 0;
+    }
+    
+    .info-box h3 {
+      color: #856404;
+      margin-bottom: 10px;
+    }
+    
+    .info-box ul {
+      color: #856404;
+      margin-left: 20px;
+    }
+    
+    .code-box {
+      background: #2c3e50;
+      color: #f8f9fa;
+      padding: 20px;
+      border-radius: 10px;
+      margin: 20px 0;
+      overflow-x: auto;
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+    }
+    
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 15px;
+      border-radius: 8px;
+      margin: 20px 0;
+      display: none;
+      border-left: 4px solid #27ae60;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🖼️ Configurar Logo - Prando Transportes</h1>
+    
+    <div class="info-box">
+      <h3>📝 Instruções:</h3>
+      <ul>
+        <li>Formato recomendado: PNG com fundo transparente</li>
+        <li>Dimensões ideais: 1200px de largura (proporção livre)</li>
+        <li>Tamanho máximo: 2MB</li>
+        <li>A logo será exibida no cabeçalho do relatório</li>
+      </ul>
+    </div>
+    
+    <div class="upload-area" id="uploadArea" onclick="document.getElementById('fileInput').click()">
+      <h2>📤 Arraste sua logo aqui</h2>
+      <p>ou clique para selecionar</p>
+      <input type="file" id="fileInput" accept="image/png,image/jpeg,image/jpg">
+    </div>
+    
+    <div class="preview-area" id="previewArea" style="display: none;">
+      <h3>Pré-visualização:</h3>
+      <img id="previewImg" alt="Logo Preview">
+    </div>
+    
+    <div style="text-align: center;">
+      <button class="btn" onclick="gerarBase64()">💾 Gerar Código Base64</button>
+      <button class="btn btn-secondary" onclick="testarRelatorio()">🧪 Testar no Relatório</button>
+    </div>
+    
+    <div class="success-message" id="successMessage">
+      ✅ Código gerado com sucesso! Role para baixo para copiar.
+    </div>
+    
+    <div class="code-box" id="codeBox" style="display: none;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <strong>📋 Código Base64 da sua logo:</strong>
+        <button onclick="copiarCodigo()" style="background: #27ae60; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">Copiar</button>
+      </div>
+      <div id="base64Output" style="word-break: break-all; max-height: 300px; overflow-y: auto;"></div>
+    </div>
+    
+    <div class="info-box" style="margin-top: 30px;">
+      <h3>🔧 Como usar no seu app:</h3>
+      <p><strong>1.</strong> Gere o código Base64 clicando no botão acima</p>
+      <p><strong>2.</strong> Copie o código gerado</p>
+      <p><strong>3.</strong> No arquivo <code>app.js</code>, localize a linha:</p>
+      <pre style="background: #f8f9fa; padding: 10px; border-radius: 5px; margin: 10px 0;">logo.src = 'data:image/png;base64,iVBORw...';</pre>
+      <p><strong>4.</strong> Substitua pelo código que você copiou</p>
+      <p><strong>5.</strong> Salve o arquivo e teste o relatório!</p>
+    </div>
+  </div>
+
+  <script>
+    let logoFile = null;
+    let logoBase64 = '';
+    
+    // Upload de arquivo
+    const fileInput = document.getElementById('fileInput');
+    const uploadArea = document.getElementById('uploadArea');
+    const previewArea = document.getElementById('previewArea');
+    const previewImg = document.getElementById('previewImg');
+    
+    fileInput.addEventListener('change', handleFile);
+    
+    // Drag and drop
+    uploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      uploadArea.classList.add('dragover');
+    });
+    
+    uploadArea.addEventListener('dragleave', () => {
+      uploadArea.classList.remove('dragover');
+    });
+    
+    uploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      uploadArea.classList.remove('dragover');
+      const files = e.dataTransfer.files;
+      if (files.length > 0) {
+        fileInput.files = files;
+        handleFile();
+      }
+    });
+    
+    function handleFile() {
+      const file = fileInput.files[0];
+      if (!file) return;
+      
+      if (!file.type.startsWith('image/')) {
+        alert('Por favor, selecione um arquivo de imagem válido!');
+        return;
+      }
+      
+      if (file.size > 2 * 1024 * 1024) {
+        alert('Arquivo muito grande! Tamanho máximo: 2MB');
+        return;
+      }
+      
+      logoFile = file;
+      
+      // Mostra preview
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        previewImg.src = e.target.result;
+        previewArea.style.display = 'block';
+        logoBase64 = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+    
+    function gerarBase64() {
+      if (!logoBase64) {
+        alert('Por favor, selecione uma imagem primeiro!');
+        return;
+      }
+      
+      const codeBox = document.getElementById('codeBox');
+      const base64Output = document.getElementById('base64Output');
+      const successMessage = document.getElementById('successMessage');
+      
+      base64Output.textContent = logoBase64;
+      codeBox.style.display = 'block';
+      successMessage.style.display = 'block';
+      
+      // Scroll suave até o código
+      setTimeout(() => {
+        codeBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }, 100);
+    }
+    
+    function copiarCodigo() {
+      const base64Output = document.getElementById('base64Output');
+      const textArea = document.createElement('textarea');
+      textArea.value = base64Output.textContent;
+      document.body.appendChild(textArea);
+      textArea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textArea);
+      
+      alert('✅ Código copiado para a área de transferência!');
+    }
+    
+    function testarRelatorio() {
+      if (!logoBase64) {
+        alert('Por favor, selecione uma imagem primeiro!');
+        return;
+      }
+      
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+      
+      canvas.width = 2480;
+      canvas.height = 1000;
+      
+      // Fundo
+      ctx.fillStyle = '#2c3e50';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      // Carrega logo
+      const logo = new Image();
+      logo.onload = () => {
+        const logoWidth = 800;
+        const logoHeight = (logo.height / logo.width) * logoWidth;
+        const logoX = (canvas.width - logoWidth) / 2;
+        const logoY = 50;
+        
+        ctx.drawImage(logo, logoX, logoY, logoWidth, logoHeight);
+        
+        // Título
+        ctx.fillStyle = '#ffffff';
+        ctx.font = 'bold 70px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('ATUALIZAÇÃO OPERACIONAL', canvas.width / 2, logoY + logoHeight + 100);
+        ctx.font = '40px Arial';
+        ctx.fillText(new Date().toLocaleString('pt-BR'), canvas.width / 2, logoY + logoHeight + 160);
+        
+        // Abre em nova aba
+        const newWindow = window.open();
+        newWindow.document.write('<html><head><title>Teste de Logo</title></head><body style="margin:0;background:#000;display:flex;justify-content:center;align-items:center;min-height:100vh;">');
+        newWindow.document.write('<img src="' + canvas.toDataURL() + '" style="max-width:100%;height:auto;box-shadow:0 10px 40px rgba(0,0,0,0.5);">');
+        newWindow.document.write('</body></html>');
+      };
+      
+      logo.src = logoBase64;
+    }
+  </script>
+</body>
+</html>

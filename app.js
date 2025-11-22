@@ -332,26 +332,368 @@ function gerarImagem() {
   const margin = 150;
   const contentWidth = canvas.width - (margin * 2);
   
-  // ===== CABEÇALHO COM LOGO (Espaço reservado) =====
+  // ===== CABEÇALHO COM LOGO =====
   ctx.fillStyle = '#2c3e50';
   ctx.fillRect(0, 0, canvas.width, 350);
   
-  // Texto indicativo para logo (você vai adicionar depois)
-  ctx.fillStyle = '#ffffff';
-  ctx.font = 'italic 40px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('[ ESPAÇO PARA SUA LOGO ]', canvas.width / 2, 140);
+  // Carrega e desenha a logo
+  const logo = new Image();
+  logo.crossOrigin = 'anonymous';
+  logo.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABLAAAADICAYAAADKyTgzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSogMABBAAQAAlBAQgFCAAiABBAAUAAQABAAEAASAIAAIDwUABAAEAAEAAgAkACAABAAAQABAAgABACAAJwBAAAAAABAACAAFABAACwAQAAIAEgAIAAAABAADABAACgANABQAHAAeAB4ABAAIAAwAEAAeABIAHAARABQAFAAUABAAHwAUAAwACAAAAAAACACBAAAAAAABAAEAAAABAAEAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAEAAEAAMAAAAAAACAAIAAgAIAAcABAAEAAcACAAYAAgAEAAIAAwADAAUABQAFAAYABgAGgAcABwAHAAcACgAJAAoACgAKAAqACgAKgAsACgALgAuAC4ALgAuAC4ALgAuADAALgAwADAAMAAwADAAMAAwADAAOAA4ADgAOAA4ADgAOAA4ADgAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAARABEAEQARABEAEQARABEAEQARABEAEQARABIAEgASABIAEgASABIAEgASABIAEgASABIAEgASABIAEwATABMAEwATABMAEwATABMAEwATABMAEwATABMAFAAUABQAFAAUABQAFAAUABQAFAAUABQAFAAUABQAFQAVABUAFQAVABUAFQAVABUAFQAVABUAFQAVABYAFgAWABYAFgAWABYAFgAWABYAFgAWABYAFgAXABcAFwAXABcAFwAXABcAFwAXABcAFwAXABgAGAAYABgAGAAYABgAGAAYABgAGAAYABgAGAAYABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAaABoAGgAaABoAGgAaABoAGgAaABoAGgAaABoAGwAbABsAGwAbABsAGwAbABsAGwAbABsAGwAbABwAHAAcABwAHAAcABwAHAAcABwAHAAcABwAHAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB8AHwAfAB8AHwAfAB8AHwAfAB8AHwAfAB8AHwAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIQAhACEAIQAhACEAIQAhACEAIQAhACEAIQAiACIAIgAiACIAIgAiACIAIgAiACIAIgAiACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAkACUAJQAlACUAJQAlACUAJQAlACUAJQAlACUAJQAmACYAJgAmACYAJgAmACYAJgAmACYAJgAmACcAJwAnACcAJwAnACcAJwAnACcAJwAnACcAKAAoACgAKAAoACgAKAAoACgAKAAoACgAKAAoACkAKQApACkAKQApACkAKQApACkAKQApACkAKQAqACoAKgAqACoAKgAqACoAKgAqACoAKgAqACsAKwArACsAKwArACsAKwArACsAKwArACsALAAsACwALAAsACwALAAsACwALAAsACwALAAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC4ALgAuAC4ALgAuAC4ALgAuAC4ALgAuAC8ALwAvAC8ALwAvAC8ALwAvAC8ALwAvAC8AMAAwADAAMAAwADAAMAAwADAAMAAwADAAMAAwADEAMQAxADEAMQAxADEAMQAxADEAMQAxADEAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAzADMAMwAzADMAMwAzADMAMwAzADMAMwAzADQANAA0ADQANAA0ADQANAA0ADQANAA0ADQANQA1ADUANQA1ADUANQA1ADUANQA1ADUANQA1ADYANQA2ADYANQA2ADYANQA2ADYANQA2ADYANQA3ADcANwA3ADcANwA3ADcANwA3ADcANwA4ADgAOAA4ADgAOAA4ADgAOAA4ADgAOAA5ADkAOQA5ADkAOQA5ADkAOQA5ADkAOQA6ADoAOgA6ADoAOgA6ADoAOgA6ADoAOgA7ADsAOwA7ADsAOwA7ADsAOwA7ADsAOwA8ADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA9AD0APQA9AD0APQA9AD0APQA9AD0APQA+AD4APgA+AD4APgA+AD4APgA+AD4APgA/AD8APwA/AD8APwA/AD8APwA/AD8APwBAAEAAQABAAEAAQABAAEAAQABAAEAAQABBAEEAQQBBAEEAQQBBAEEAQQBBAEEAQQBCAEIAQgBCAEIAQgBCAEIAQgBCAEIAQgBDAEMAQwBDAEMAQwBDAEMAQwBDAEMAQwBEAEQARABEAEQARABEAEQARABEAEQARABFAEUARQBFAEUARQBFAEUARQBFAEUARQBGAEYARgBGAEYARgBGAEYARgBGAEYARgBHAEcARwBHAEcARwBHAEcARwBHAEcARwBIAEgASABIAEgASABIAEgASABIAEgASABJAEkASQBJAEkASQBJAEkASQBJAEkASQBKAEoASgBKAEoASgBKAEoASgBKAEoASgBLAEsASwBLAEsASwBLAEsASwBLAEsASwBMAEwATABMAEwATABMAEwATABMAEwATABNAE0ATQBNAE0ATQBNAE0ATQBNAE0ATQBOAEUATgBOAE4ATgBOAE4ATgBOAE4ATgBPAE8ATwBPAE8ATwBPAE8ATwBPAE8ATwBQAFAAUABQAFAAUABQAFAAUABQAFAAUABRAFEAUQBRAFEAUQBRAFEAUQBRAFEAUQBSAFIAUgBSAFIAUgBSAFIAUgBSAFIAUgBTAFMAUwBTAFMAUwBTAFMAUwBTAFMAUwBUAFQAVABUAFQAVABUAFQAVABUAFQAVABVAFUAVQBVAFUAVQBVAFUAVQBVAFUAVQBWAFYAVgBWAFYAVgBWAFYAVgBWAFYAVgBXAFcAVwBXAFcAVwBXAFcAVwBXAFcAVwBYAFgAWABYAFgAWABYAFgAWABYAFgAWABZAFkAWQBZAFkAWQBZAFkAWQBZAFkAWQBaAFoAWgBaAFoAWgBaAFoAWgBaAFoAWgBbAFsAWwBbAFsAWwBbAFsAWwBbAFsAWwBcAFwAXABcAFwAXABcAFwAXABcAFwAXABdAF0AXQBdAF0AXQBdAF0AXQBdAF0AXQBeAF4AXgBeAF4AXgBeAF4AXgBeAF4AXgBfAF8AXwBfAF8AXwBfAF8AXwBfAF8AXwBgAGAAYABgAGAAYABgAGAAYABgAGAAYABhAGEAYQBhAGEAYQBhAGEAYQBhAGEAYQBiAGIAYgBiAGIAYgBiAGIAYgBiAGIAYgBjAGMAYwBjAGMAYwBjAGMAYwBjAGMAYwBkAGQAZABkAGQAZABkAGQAZABkAGQAZABlAGUAZQBlAGUAZQBlAGUAZQBlAGUAZQBmAGYAZgBmAGYAZgBmAGYAZgBmAGYAZgBnAGcAZwBnAGcAZwBnAGcAZwBnAGcAZwBoAGgAaABoAGgAaABoAGgAaABoAGgAaABpAGkAaQBpAGkAaQBpAGkAaQBpAGkAaQBqAGoAagBqAGoAagBqAGoAagBqAGoAagBrAGsAawBrAGsAawBrAGsAawBrAGsAawBsAGwAbABsAGwAbABsAGwAbABsAGwAbABtAG0AbQBtAG0AbQBtAG0AbQBtAG0AbQBuAG4AbgBuAG4AbgBuAG4AbgBuAG4AbgBvAG8AbwBvAG8AbwBvAG8AbwBvAG8AbwBwAHAAcABwAHAAcABwAHAAcABwAHAAcABxAHEAcQBxAHEAcQBxAHEAcQBxAHEAcQByAHIAcgByAHIAcgByAHIAcgByAHIAcgBzAHMAcwBzAHMAcwBzAHMAcwBzAHMAcwB0AHQAdAB0AHQAdAB0AHQAdAB0AHQAdAB1AHUAdQB1AHUAdQB1AHUAdQB1AHUAdQB2AHYAdgB2AHYAdgB2AHYAdgB2AHYAdgB3AHcAdwB3AHcAdwB3AHcAdwB3AHcAdwB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB5AHkAeQB5AHkAeQB5AHkAeQB5AHkAeQB6AHoAegB6AHoAegB6AHoAegB6AHoAegB7AHsAewB7AHsAewB7AHsAewB7AHsAewB8AHwAfAB8AHwAfAB8AHwAfAB8AHwAfAB9AH0AfQB9AH0AfQB9AH0AfQB9AH0AfQB+AH4AfgB+AH4AfgB+AH4AfgB+AH4AfgB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwCAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIEAgQCBAIEAgQCBAIEAgQCBAIEAgQCBAIIAggCCAIIAggCCAIIAggCCAIIAggCCAIMAgwCDAIMAgwCDAIMAgwCDAIMAgwCDAIQAhACEAIQAhACEAIQAhACEAIQAhACEAIUAhQCFAIUAhQCFAIUAhQCFAIUAhQCFAIYAhgCGAIYAhgCGAIYAhgCGAIYAhgCGAIcAhwCHAIcAhwCHAIcAhwCHAIcAhwCHAIgAiACIAIgAiACIAIgAiACIAIgAiACIAIkAiQCJAIkAiQCJAIkAiQCJAIkAiQCJAIoAigCKAIoAigCKAIoAigCKAIoAigCKAIsAiwCLAIsAiwCLAIsAiwCLAIsAiwCLAIwAjACMAIwAjACMAIwAjACMAIwAjACMAI0AjQCNAI0AjQCNAI0AjQCNAI0AjQCNAI4AjgCOAI4AjgCOAI4AjgCOAI4AjgCOAI8AjwCPAI8AjwCPAI8AjwCPAI8AjwCPAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJIAkgCSAJIAkgCSAJIAkgCSAJIAkgCSAJIAkwCTAJMAkwCTAJMAkwCTAJMAkwCTAJMAlACUAJQAlACUAJQAlACUAJQAlACUAJQAlQCVAJUAlQCVAJUAlQCVAJUAlQCVAJUAlgCWAJYAlgCWAJYAlgCWAJYAlgCWAJYAlwCXAJcAlwCXAJcAlwCXAJcAlwCXAJcAmACYAJgAmACYAJgAmACYAJgAmACYAJgAmQCZAJkAmQCZAJkAmQCZAJkAmQCZAJkAmgCaAJoAmgCaAJoAmgCaAJoAmgCaAJoAmwCbAJsAmwCbAJsAmwCbAJsAmwCbAJsAnACcAJwAnACcAJwAnACcAJwAnACcAJwAnQCdAJ0AnQCdAJ0AnQCdAJ0AnQCdAJ0AngCeAJ4AngCeAJ4AngCeAJ4AngCeAJ4AnwCfAJ8AnwCfAJ8AnwCfAJ8AnwCfAJ8AoAC';
   
-  // Título
+  logo.onload = function() {
+    // Desenha a logo no cabeçalho (centralizada)
+    const logoWidth = 800;
+    const logoHeight = 180;
+    const logoX = (canvas.width - logoWidth) / 2;
+    const logoY = 50;
+    ctx.drawImage(logo, logoX, logoY, logoWidth, logoHeight);
+    
+    // Título abaixo da logo
+    ctx.font = 'bold 70px Arial';
+    ctx.fillStyle = '#ffffff';
+    ctx.textAlign = 'center';
+    ctx.fillText('ATUALIZAÇÃO OPERACIONAL', canvas.width / 2, 280);
+    
+    // Data/Hora
+    ctx.font = '40px Arial';
+    ctx.fillText(dataHora, canvas.width / 2, 330);
+    
+    y = 450;
+    
+    // ===== DADOS OPERACIONAIS =====
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'bold 55px Arial';
+    ctx.textAlign = 'left';
+    ctx.fillText('DADOS OPERACIONAIS', margin, y);
+    
+    y += 80;
+    
+    // Box de fundo para dados
+    ctx.fillStyle = '#f8f9fa';
+    ctx.fillRect(margin, y, contentWidth, 900);
+    ctx.strokeStyle = '#3498db';
+    ctx.lineWidth = 5;
+    ctx.strokeRect(margin, y, contentWidth, 900);
+    
+    y += 70;
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = '45px Arial';
+    
+    const dados = [
+      { emoji: '📈', label: 'Projeção de Entrega:', valor: obterValorFormatado(form.entrega) + ' Ton' },
+      { emoji: '➡️', label: 'Entrada de CVs (Usina):', valor: obterValorFormatado(form.entrada) },
+      { emoji: '⬅️', label: 'Saída de CVs (Usina):', valor: obterValorFormatado(form.saida) },
+      { emoji: '🚛', label: 'Retorno Usina:', valor: obterValorFormatado(form.retorno) },
+      { emoji: '🌾', label: 'Colheita (Carregamento/Hora):', valor: form.colheita.value },
+      { emoji: '📍', label: 'Raio Médio:', valor: obterValorFormatado(form.raio) + ' Km' },
+      { emoji: '🔄', label: 'Rotação Média na Usina:', valor: obterValorFormatado(form.rotacao) + ' Voltas' },
+      { emoji: '🚛', label: 'Conjuntos Carregados:', valor: obterValorFormatado(form.conjuntos) },
+      { emoji: '⚖️', label: 'Densidade Média:', valor: obterValorFormatado(form.densidade) }
+    ];
+    
+    dados.forEach((item, index) => {
+      ctx.fillStyle = '#555';
+      ctx.font = '42px Arial';
+      ctx.fillText(`${item.emoji} ${item.label}`, margin + 40, y);
+      
+      ctx.fillStyle = '#2c3e50';
+      ctx.font = 'bold 48px Arial';
+      ctx.textAlign = 'right';
+      ctx.fillText(item.valor || '-', canvas.width - margin - 40, y);
+      ctx.textAlign = 'left';
+      
+      y += 95;
+    });
+    
+    y += 60;
+    
+    // ===== DUAS COLUNAS: MANUTENÇÃO E SOCORROS =====
+    const colWidth = (contentWidth - 60) / 2;
+    const col1X = margin;
+    const col2X = margin + colWidth + 60;
+    let y1 = y;
+    let y2 = y;
+    
+    // COLUNA 1 - MANUTENÇÃO
+    ctx.fillStyle = '#e67e22';
+    ctx.font = 'bold 50px Arial';
+    ctx.fillText('🛠️ VEÍCULOS EM MANUTENÇÃO', col1X, y1);
+    y1 += 70;
+    
+    ctx.fillStyle = '#fff3e0';
+    const heightManutencao = Math.max(500, manutencaoData.length * 280 + 100);
+    ctx.fillRect(col1X, y1, colWidth, heightManutencao);
+    ctx.strokeStyle = '#e67e22';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(col1X, y1, colWidth, heightManutencao);
+    
+    y1 += 60;
+    
+    if (manutencaoData.length === 0) {
+      ctx.fillStyle = '#999';
+      ctx.font = 'italic 38px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Nenhuma manutenção', col1X + colWidth / 2, y1 + 100);
+      ctx.textAlign = 'left';
+    } else {
+      manutencaoData.forEach((item, index) => {
+        ctx.fillStyle = '#555';
+        ctx.font = '36px Arial';
+        ctx.fillText(`🚛 Frota: ${item.frota || '-'}`, col1X + 30, y1);
+        y1 += 50;
+        ctx.fillText(`📍 Local: ${item.local || '-'}`, col1X + 30, y1);
+        y1 += 50;
+        ctx.fillText(`🔧 Descrição: ${item.descricao || '-'}`, col1X + 30, y1);
+        y1 += 50;
+        ctx.fillText(`🗒️ Status: ${item.status || '-'}`, col1X + 30, y1);
+        y1 += 80;
+      });
+    }
+    
+    // COLUNA 2 - SOCORROS
+    ctx.fillStyle = '#e74c3c';
+    ctx.font = 'bold 50px Arial';
+    ctx.fillText('🆘 OCORRÊNCIAS', col2X, y2);
+    y2 += 70;
+    
+    ctx.fillStyle = '#ffebee';
+    const heightOcorrencia = Math.max(500, ocorrenciaData.length * 280 + 100);
+    ctx.fillRect(col2X, y2, colWidth, heightOcorrencia);
+    ctx.strokeStyle = '#e74c3c';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(col2X, y2, colWidth, heightOcorrencia);
+    
+    y2 += 60;
+    
+    if (ocorrenciaData.length === 0) {
+      ctx.fillStyle = '#999';
+      ctx.font = 'italic 38px Arial';
+      ctx.textAlign = 'center';
+      ctx.fillText('Nenhuma ocorrência', col2X + colWidth / 2, y2 + 100);
+      ctx.textAlign = 'left';
+    } else {
+      ocorrenciaData.forEach((item, index) => {
+        ctx.fillStyle = '#555';
+        ctx.font = '36px Arial';
+        ctx.fillText(`🚛 Frota: ${item.frota || '-'}`, col2X + 30, y2);
+        y2 += 50;
+        ctx.fillText(`📍 Local: ${item.local || '-'}`, col2X + 30, y2);
+        y2 += 50;
+        ctx.fillText(`🔧 Descrição: ${item.descricao || '-'}`, col2X + 30, y2);
+        y2 += 50;
+        ctx.fillText(`🗒️ Status: ${item.status || '-'}`, col2X + 30, y2);
+        y2 += 80;
+      });
+    }
+    
+    // Ajusta altura do canvas baseado no conteúdo
+    const finalHeight = Math.max(y1, y2) + 300;
+    if (finalHeight > canvas.height) {
+      const tempCanvas = document.createElement('canvas');
+      tempCanvas.width = canvas.width;
+      tempCanvas.height = canvas.height;
+      const tempCtx = tempCanvas.getContext('2d');
+      tempCtx.drawImage(canvas, 0, 0);
+      
+      canvas.height = finalHeight;
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(tempCanvas, 0, 0);
+    }
+    
+    // ===== RODAPÉ =====
+    const footerY = canvas.height - 150;
+    ctx.fillStyle = '#2c3e50';
+    ctx.fillRect(0, footerY, canvas.width, 150);
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.font = '40px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Desenvolvido por Everton Tezzon Ferreira', canvas.width / 2, footerY + 70);
+    ctx.font = '32px Arial';
+    ctx.fillText(new Date().toLocaleString('pt-BR'), canvas.width / 2, footerY + 115);
+    
+    // Exibe o modal com a imagem
+    document.getElementById('modalImagem').style.display = 'block';
+  };
+  
+  // Se a imagem não carregar, gera sem logo
+  logo.onerror = function() {
+    console.log('Logo não carregada, gerando relatório sem logo...');
+    gerarRelatorioSemLogo();
+  };
+}
+
+function gerarRelatorioSemLogo() {
+  const form = document.forms['operacaoForm'];
+  const dataHora = document.getElementById('horaAtual').textContent;
+  const canvas = document.getElementById('canvasRelatorio');
+  const ctx = canvas.getContext('2d');
+  
+  canvas.width = 2480;
+  canvas.height = 3508;
+  
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  let y = 100;
+  const margin = 150;
+  const contentWidth = canvas.width - (margin * 2);
+  
+  // Cabeçalho simples sem logo
+  ctx.fillStyle = '#2c3e50';
+  ctx.fillRect(0, 0, canvas.width, 300);
+  
   ctx.font = 'bold 80px Arial';
   ctx.fillStyle = '#ffffff';
-  ctx.fillText('📊 ATUALIZAÇÃO OPERACIONAL', canvas.width / 2, 260);
+  ctx.textAlign = 'center';
+  ctx.fillText('📊 ATUALIZAÇÃO OPERACIONAL', canvas.width / 2, 150);
   
-  // Data/Hora
   ctx.font = '45px Arial';
-  ctx.fillText(dataHora, canvas.width / 2, 320);
+  ctx.fillText(dataHora, canvas.width / 2, 230);
   
-  y = 450;
+  y = 400;
+  
+  // Restante do código igual (dados, colunas, rodapé)
+  ctx.fillStyle = '#2c3e50';
+  ctx.font = 'bold 55px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('DADOS OPERACIONAIS', margin, y);
+  
+  y += 80;
+  
+  ctx.fillStyle = '#f8f9fa';
+  ctx.fillRect(margin, y, contentWidth, 900);
+  ctx.strokeStyle = '#3498db';
+  ctx.lineWidth = 5;
+  ctx.strokeRect(margin, y, contentWidth, 900);
+  
+  y += 70;
+  
+  const dados = [
+    { emoji: '📈', label: 'Projeção de Entrega:', valor: obterValorFormatado(form.entrega) + ' Ton' },
+    { emoji: '➡️', label: 'Entrada de CVs:', valor: obterValorFormatado(form.entrada) },
+    { emoji: '⬅️', label: 'Saída de CVs:', valor: obterValorFormatado(form.saida) },
+    { emoji: '🚛', label: 'Retorno Usina:', valor: obterValorFormatado(form.retorno) },
+    { emoji: '🌾', label: 'Colheita:', valor: form.colheita.value },
+    { emoji: '📍', label: 'Raio Médio:', valor: obterValorFormatado(form.raio) + ' Km' },
+    { emoji: '🔄', label: 'Rotação Média:', valor: obterValorFormatado(form.rotacao) + ' Voltas' },
+    { emoji: '🚛', label: 'Conjuntos:', valor: obterValorFormatado(form.conjuntos) },
+    { emoji: '⚖️', label: 'Densidade:', valor: obterValorFormatado(form.densidade) }
+  ];
+  
+  dados.forEach((item) => {
+    ctx.fillStyle = '#555';
+    ctx.font = '42px Arial';
+    ctx.fillText(`${item.emoji} ${item.label}`, margin + 40, y);
+    
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'bold 48px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText(item.valor || '-', canvas.width - margin - 40, y);
+    ctx.textAlign = 'left';
+    
+    y += 95;
+  });
+  
+  y += 60;
+  
+  // Duas colunas
+  const colWidth = (contentWidth - 60) / 2;
+  const col1X = margin;
+  const col2X = margin + colWidth + 60;
+  let y1 = y;
+  let y2 = y;
+  
+  // Manutenção
+  ctx.fillStyle = '#e67e22';
+  ctx.font = 'bold 50px Arial';
+  ctx.fillText('🛠️ MANUTENÇÃO', col1X, y1);
+  y1 += 70;
+  
+  ctx.fillStyle = '#fff3e0';
+  const hMan = Math.max(500, manutencaoData.length * 280 + 100);
+  ctx.fillRect(col1X, y1, colWidth, hMan);
+  ctx.strokeStyle = '#e67e22';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(col1X, y1, colWidth, hMan);
+  y1 += 60;
+  
+  if (manutencaoData.length === 0) {
+    ctx.fillStyle = '#999';
+    ctx.font = 'italic 38px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nenhuma', col1X + colWidth / 2, y1 + 100);
+    ctx.textAlign = 'left';
+  } else {
+    manutencaoData.forEach((item) => {
+      ctx.fillStyle = '#555';
+      ctx.font = '36px Arial';
+      ctx.fillText(`Frota: ${item.frota || '-'}`, col1X + 30, y1);
+      y1 += 50;
+      ctx.fillText(`Local: ${item.local || '-'}`, col1X + 30, y1);
+      y1 += 50;
+      ctx.fillText(`Desc: ${item.descricao || '-'}`, col1X + 30, y1);
+      y1 += 50;
+      ctx.fillText(`Status: ${item.status || '-'}`, col1X + 30, y1);
+      y1 += 80;
+    });
+  }
+  
+  // Ocorrências
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = 'bold 50px Arial';
+  ctx.fillText('🆘 OCORRÊNCIAS', col2X, y2);
+  y2 += 70;
+  
+  ctx.fillStyle = '#ffebee';
+  const hOco = Math.max(500, ocorrenciaData.length * 280 + 100);
+  ctx.fillRect(col2X, y2, colWidth, hOco);
+  ctx.strokeStyle = '#e74c3c';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(col2X, y2, colWidth, hOco);
+  y2 += 60;
+  
+  if (ocorrenciaData.length === 0) {
+    ctx.fillStyle = '#999';
+    ctx.font = 'italic 38px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nenhuma', col2X + colWidth / 2, y2 + 100);
+    ctx.textAlign = 'left';
+  } else {
+    ocorrenciaData.forEach((item) => {
+      ctx.fillStyle = '#555';
+      ctx.font = '36px Arial';
+      ctx.fillText(`Frota: ${item.frota || '-'}`, col2X + 30, y2);
+      y2 += 50;
+      ctx.fillText(`Local: ${item.local || '-'}`, col2X + 30, y2);
+      y2 += 50;
+      ctx.fillText(`Desc: ${item.descricao || '-'}`, col2X + 30, y2);
+      y2 += 50;
+      ctx.fillText(`Status: ${item.status || '-'}`, col2X + 30, y2);
+      y2 += 80;
+    });
+  }
+  
+  const finalHeight = Math.max(y1, y2) + 300;
+  if (finalHeight > 3508) {
+    canvas.height = finalHeight;
+  }
+  
+  // Rodapé
+  const footerY = canvas.height - 150;
+  ctx.fillStyle = '#2c3e50';
+  ctx.fillRect(0, footerY, canvas.width, 150);
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '40px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Desenvolvido por Everton Tezzon Ferreira', canvas.width / 2, footerY + 70);
+  ctx.font = '32px Arial';
+  ctx.fillText(new Date().toLocaleString('pt-BR'), canvas.width / 2, footerY + 115);
+  
+  document.getElementById('modalImagem').style.display = 'block';
+}
   
   // ===== DADOS OPERACIONAIS =====
   ctx.fillStyle = '#2c3e50';

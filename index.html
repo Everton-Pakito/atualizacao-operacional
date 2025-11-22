@@ -94,7 +94,7 @@
             <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
           </div>
           <div class="input-group">
-            <label>🚛 Retorno Usina:</label>
+            <label>🚛 Retorno de CVs Usina:</label>
             <input type="text" name="retorno" inputmode="decimal" pattern="[0-9]*" />
             <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
           </div>
@@ -141,7 +141,23 @@
   </div>
 
   <footer>Feito com ❤️ por Everton Tezzon Ferreira</footer>
+  
+  <!-- Modal para visualizar imagem -->
+  <div id="modalImagem" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; padding: 20px; overflow: auto;">
+    <div style="max-width: 800px; margin: 0 auto; position: relative;">
+      <button onclick="fecharModal()" style="position: absolute; top: 10px; right: 10px; background: #e74c3c; color: white; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; z-index: 10000;">❌ Fechar</button>
+      <div style="text-align: center; margin-top: 60px;">
+        <canvas id="canvasRelatorio" style="max-width: 100%; height: auto; background: white; box-shadow: 0 10px 40px rgba(0,0,0,0.5);"></canvas>
+        <div style="margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+          <button onclick="baixarImagem()" style="background: #27ae60; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">💾 Baixar PNG</button>
+          <button onclick="compartilharImagem()" style="background: #25D366; color: white; border: none; padding: 12px 30px; border-radius: 8px; cursor: pointer; font-size: 16px; font-weight: 600;">📤 Baixar e Enviar WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  
   <script src="app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     // Registra o Service Worker para funcionalidade PWA
     if ('serviceWorker' in navigator) {

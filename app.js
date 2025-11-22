@@ -306,3 +306,241 @@ window.onload = () => {
     normalizarEntradaNumerica(campo);
   });
 };
+
+// ========================================
+// FUNÇÕES PARA GERAR E COMPARTILHAR IMAGEM
+// ========================================
+
+function gerarImagem() {
+  const form = document.forms['operacaoForm'];
+  const dataHora = document.getElementById('horaAtual').textContent;
+  
+  // Cria canvas A4 (210mm x 297mm em 300 DPI = 2480 x 3508 pixels)
+  const canvas = document.getElementById('canvasRelatorio');
+  const ctx = canvas.getContext('2d');
+  
+  // Define dimensões A4 em alta resolução
+  canvas.width = 2480;
+  canvas.height = 3508;
+  
+  // Fundo branco
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  
+  // Variáveis de layout
+  let y = 100;
+  const margin = 150;
+  const contentWidth = canvas.width - (margin * 2);
+  
+  // ===== CABEÇALHO COM LOGO (Espaço reservado) =====
+  ctx.fillStyle = '#2c3e50';
+  ctx.fillRect(0, 0, canvas.width, 350);
+  
+  // Texto indicativo para logo (você vai adicionar depois)
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'italic 40px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('[ ESPAÇO PARA SUA LOGO ]', canvas.width / 2, 140);
+  
+  // Título
+  ctx.font = 'bold 80px Arial';
+  ctx.fillStyle = '#ffffff';
+  ctx.fillText('📊 ATUALIZAÇÃO OPERACIONAL', canvas.width / 2, 260);
+  
+  // Data/Hora
+  ctx.font = '45px Arial';
+  ctx.fillText(dataHora, canvas.width / 2, 320);
+  
+  y = 450;
+  
+  // ===== DADOS OPERACIONAIS =====
+  ctx.fillStyle = '#2c3e50';
+  ctx.font = 'bold 55px Arial';
+  ctx.textAlign = 'left';
+  ctx.fillText('DADOS OPERACIONAIS', margin, y);
+  
+  y += 80;
+  
+  // Box de fundo para dados
+  ctx.fillStyle = '#f8f9fa';
+  ctx.fillRect(margin, y, contentWidth, 900);
+  ctx.strokeStyle = '#3498db';
+  ctx.lineWidth = 5;
+  ctx.strokeRect(margin, y, contentWidth, 900);
+  
+  y += 70;
+  ctx.fillStyle = '#2c3e50';
+  ctx.font = '45px Arial';
+  
+  const dados = [
+    { emoji: '📈', label: 'Projeção de Entrega:', valor: obterValorFormatado(form.entrega) + ' Ton' },
+    { emoji: '➡️', label: 'Entrada de CVs (Usina):', valor: obterValorFormatado(form.entrada) },
+    { emoji: '⬅️', label: 'Saída de CVs (Usina):', valor: obterValorFormatado(form.saida) },
+    { emoji: '🚛', label: 'Retorno Usina:', valor: obterValorFormatado(form.retorno) },
+    { emoji: '🌾', label: 'Colheita (Carregamento/Hora):', valor: form.colheita.value },
+    { emoji: '📍', label: 'Raio Médio:', valor: obterValorFormatado(form.raio) + ' Km' },
+    { emoji: '🔄', label: 'Rotação Média na Usina:', valor: obterValorFormatado(form.rotacao) + ' Voltas' },
+    { emoji: '🚛', label: 'Conjuntos Carregados:', valor: obterValorFormatado(form.conjuntos) },
+    { emoji: '⚖️', label: 'Densidade Média:', valor: obterValorFormatado(form.densidade) }
+  ];
+  
+  dados.forEach((item, index) => {
+    ctx.fillStyle = '#555';
+    ctx.font = '42px Arial';
+    ctx.fillText(`${item.emoji} ${item.label}`, margin + 40, y);
+    
+    ctx.fillStyle = '#2c3e50';
+    ctx.font = 'bold 48px Arial';
+    ctx.textAlign = 'right';
+    ctx.fillText(item.valor || '-', canvas.width - margin - 40, y);
+    ctx.textAlign = 'left';
+    
+    y += 95;
+  });
+  
+  y += 60;
+  
+  // ===== DUAS COLUNAS: MANUTENÇÃO E SOCORROS =====
+  const colWidth = (contentWidth - 60) / 2;
+  const col1X = margin;
+  const col2X = margin + colWidth + 60;
+  let y1 = y; // Y da coluna 1
+  let y2 = y; // Y da coluna 2
+  
+  // COLUNA 1 - MANUTENÇÃO
+  ctx.fillStyle = '#e67e22';
+  ctx.font = 'bold 50px Arial';
+  ctx.fillText('🛠️ VEÍCULOS EM MANUTENÇÃO', col1X, y1);
+  y1 += 70;
+  
+  ctx.fillStyle = '#fff3e0';
+  const heightManutencao = Math.max(500, manutencaoData.length * 280 + 100);
+  ctx.fillRect(col1X, y1, colWidth, heightManutencao);
+  ctx.strokeStyle = '#e67e22';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(col1X, y1, colWidth, heightManutencao);
+  
+  y1 += 60;
+  
+  if (manutencaoData.length === 0) {
+    ctx.fillStyle = '#999';
+    ctx.font = 'italic 38px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nenhuma manutenção', col1X + colWidth / 2, y1 + 100);
+    ctx.textAlign = 'left';
+  } else {
+    manutencaoData.forEach((item, index) => {
+      ctx.fillStyle = '#555';
+      ctx.font = '36px Arial';
+      ctx.fillText(`🚛 Frota: ${item.frota || '-'}`, col1X + 30, y1);
+      y1 += 50;
+      ctx.fillText(`📍 Local: ${item.local || '-'}`, col1X + 30, y1);
+      y1 += 50;
+      ctx.fillText(`🔧 Descrição: ${item.descricao || '-'}`, col1X + 30, y1);
+      y1 += 50;
+      ctx.fillText(`🗒️ Status: ${item.status || '-'}`, col1X + 30, y1);
+      y1 += 80;
+    });
+  }
+  
+  // COLUNA 2 - SOCORROS
+  ctx.fillStyle = '#e74c3c';
+  ctx.font = 'bold 50px Arial';
+  ctx.fillText('🆘 OCORRÊNCIAS', col2X, y2);
+  y2 += 70;
+  
+  ctx.fillStyle = '#ffebee';
+  const heightOcorrencia = Math.max(500, ocorrenciaData.length * 280 + 100);
+  ctx.fillRect(col2X, y2, colWidth, heightOcorrencia);
+  ctx.strokeStyle = '#e74c3c';
+  ctx.lineWidth = 4;
+  ctx.strokeRect(col2X, y2, colWidth, heightOcorrencia);
+  
+  y2 += 60;
+  
+  if (ocorrenciaData.length === 0) {
+    ctx.fillStyle = '#999';
+    ctx.font = 'italic 38px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('Nenhuma ocorrência', col2X + colWidth / 2, y2 + 100);
+    ctx.textAlign = 'left';
+  } else {
+    ocorrenciaData.forEach((item, index) => {
+      ctx.fillStyle = '#555';
+      ctx.font = '36px Arial';
+      ctx.fillText(`🚛 Frota: ${item.frota || '-'}`, col2X + 30, y2);
+      y2 += 50;
+      ctx.fillText(`📍 Local: ${item.local || '-'}`, col2X + 30, y2);
+      y2 += 50;
+      ctx.fillText(`🔧 Descrição: ${item.descricao || '-'}`, col2X + 30, y2);
+      y2 += 50;
+      ctx.fillText(`🗒️ Status: ${item.status || '-'}`, col2X + 30, y2);
+      y2 += 80;
+    });
+  }
+  
+  // Ajusta altura do canvas baseado no conteúdo
+  const finalHeight = Math.max(y1, y2) + 300;
+  if (finalHeight > canvas.height) {
+    const tempCanvas = document.createElement('canvas');
+    tempCanvas.width = canvas.width;
+    tempCanvas.height = canvas.height;
+    const tempCtx = tempCanvas.getContext('2d');
+    tempCtx.drawImage(canvas, 0, 0);
+    
+    canvas.height = finalHeight;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.drawImage(tempCanvas, 0, 0);
+  }
+  
+  // ===== RODAPÉ =====
+  const footerY = canvas.height - 150;
+  ctx.fillStyle = '#2c3e50';
+  ctx.fillRect(0, footerY, canvas.width, 150);
+  
+  ctx.fillStyle = '#ffffff';
+  ctx.font = '40px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('Desenvolvido por Everton Tezzon Ferreira', canvas.width / 2, footerY + 70);
+  ctx.font = '32px Arial';
+  ctx.fillText(new Date().toLocaleString('pt-BR'), canvas.width / 2, footerY + 115);
+  
+  // Exibe o modal com a imagem
+  document.getElementById('modalImagem').style.display = 'block';
+}
+
+function fecharModal() {
+  document.getElementById('modalImagem').style.display = 'none';
+}
+
+function baixarImagem() {
+  const canvas = document.getElementById('canvasRelatorio');
+  const link = document.createElement('a');
+  const dataHora = new Date().toLocaleString('pt-BR').replace(/[/:]/g, '-').replace(/,/g, '');
+  link.download = `relatorio-operacional-${dataHora}.png`;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+}
+
+async function compartilharImagem() {
+  const canvas = document.getElementById('canvasRelatorio');
+  
+  try {
+    const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+    const file = new File([blob], 'relatorio-operacional.png', { type: 'image/png' });
+    
+    if (navigator.share && navigator.canShare({ files: [file] })) {
+      await navigator.share({
+        files: [file],
+        title: 'Relatório Operacional',
+        text: 'Atualização Operacional'
+      });
+    } else {
+      alert('💡 Compartilhamento não suportado.\nUse o botão "Baixar PNG" e envie manualmente.');
+    }
+  } catch (error) {
+    console.error('Erro ao compartilhar:', error);
+    alert('Erro ao compartilhar. Use o botão "Baixar PNG".');
+  }
+}

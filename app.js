@@ -1,3 +1,9 @@
+// ========================================
+// ATUALIZAÇÃO OPERACIONAL - PWA v1.2
+// Desenvolvido por: Everton Tezzon Ferreira
+// ========================================
+
+// Função para exibir hora arredondada
 function horaArredondada() {
   const agora = new Date();
   agora.setMinutes(0, 0, 0);
@@ -6,19 +12,20 @@ function horaArredondada() {
   document.getElementById('horaAtual').textContent = `Atualização — ${dataFormatada} às ${horaFormatada}`;
 }
 
+// ========================================
+// FUNÇÕES DE CONVERSÃO E FORMATAÇÃO
+// ========================================
+
 // Função para converter fração em decimal
 function converterFracaoParaDecimal(valor) {
   if (!valor) return 0;
   
-  // Remove espaços extras
   valor = valor.toString().trim();
   
-  // Se já é um número decimal simples, apenas substitui vírgula por ponto
   if (/^\d+[,.]?\d*$/.test(valor)) {
     return parseFloat(valor.replace(',', '.'));
   }
   
-  // Padrão para número inteiro seguido de fração (ex: 6 1/4, 5 2/3)
   const fracaoComInteiro = valor.match(/^(\d+)\s+(\d+)\/(\d+)$/);
   if (fracaoComInteiro) {
     const inteiro = parseInt(fracaoComInteiro[1]);
@@ -27,7 +34,6 @@ function converterFracaoParaDecimal(valor) {
     return inteiro + (numerador / denominador);
   }
   
-  // Padrão para apenas fração (ex: 1/4, 3/8)
   const apenasfracao = valor.match(/^(\d+)\/(\d+)$/);
   if (apenasfracao) {
     const numerador = parseInt(apenasfracao[1]);
@@ -35,22 +41,17 @@ function converterFracaoParaDecimal(valor) {
     return numerador / denominador;
   }
   
-  // Se não conseguiu converter, tenta parseFloat normal
   return parseFloat(valor.replace(',', '.')) || 0;
 }
 
-// Função para formatar valor monetário/tonelagem brasileiro
+// Função para formatar tonelagem no padrão brasileiro
 function formatarTonelagem(valor) {
-  // Remove tudo que não é número
   let numeros = valor.replace(/\D/g, '');
   
-  // Se está vazio, retorna vazio
   if (!numeros) return '';
   
-  // Converte para número e divide por 100 para ter 2 casas decimais
   let numero = parseFloat(numeros) / 100;
   
-  // Formata no padrão brasileiro
   return numero.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
@@ -63,32 +64,24 @@ function aplicarMascaraEntrega(input) {
     let valor = e.target.value;
     let posicaoCursor = e.target.selectionStart;
     
-    // Salva quantos separadores existiam antes do cursor
     let separadoresAntes = (valor.substring(0, posicaoCursor).match(/[.,]/g) || []).length;
     
-    // Aplica a formatação
     let valorFormatado = formatarTonelagem(valor);
     
-    // Atualiza o valor do campo
     e.target.value = valorFormatado;
     
-    // Conta quantos separadores existem agora antes do cursor
     let separadoresDepois = (valorFormatado.substring(0, posicaoCursor).match(/[.,]/g) || []).length;
     
-    // Ajusta a posição do cursor baseado na diferença de separadores
     let novaPosicao = posicaoCursor + (separadoresDepois - separadoresAntes);
     
-    // Garante que o cursor não saia dos limites
     if (novaPosicao < 0) novaPosicao = 0;
     if (novaPosicao > valorFormatado.length) novaPosicao = valorFormatado.length;
     
-    // Define a nova posição do cursor
     setTimeout(() => {
       e.target.setSelectionRange(novaPosicao, novaPosicao);
     }, 0);
   });
   
-  // Ao sair do campo, garante formatação correta
   input.addEventListener('blur', function(e) {
     if (e.target.value) {
       e.target.value = formatarTonelagem(e.target.value);
@@ -100,19 +93,28 @@ function aplicarMascaraEntrega(input) {
 function obterValorTonelagem(valorFormatado) {
   if (!valorFormatado) return '';
   
-  // Remove pontos e substitui vírgula por ponto
   let numero = valorFormatado.replace(/\./g, '').replace(',', '.');
   let valor = parseFloat(numero);
   
   if (isNaN(valor)) return '';
   
-  // Retorna formatado para exibição
   return valor.toLocaleString('pt-BR', {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2
   });
 }
 
+// Função para formatar número para exibição
+function formatarNumero(numero) {
+  if (isNaN(numero) || numero === 0) return '';
+  return numero.toFixed(2).replace('.', ',');
+}
+
+// ========================================
+// FUNÇÕES ESPECÍFICAS DE CAMPOS
+// ========================================
+
+// Função para calcular colheita automaticamente
 function calcularColheita() {
   const entradaValor = document.getElementById("entrada").value;
   const saidaValor = document.getElementById("saida").value;
@@ -124,14 +126,12 @@ function calcularColheita() {
   document.getElementById("colheita").value = formatarNumero(resultado);
 }
 
-// Função para normalizar entrada de números (aceita tanto vírgula quanto ponto)
+// Função para normalizar entrada de números
 function normalizarEntradaNumerica(input) {
   input.addEventListener('input', function() {
-    // Para campos numéricos, apenas números, vírgulas e pontos
     this.value = this.value.replace(/[^0-9,.]/g, '');
   });
   
-  // Ao sair do campo, valida e formata se necessário
   input.addEventListener('blur', function() {
     if (this.value) {
       const valorDecimal = converterFracaoParaDecimal(this.value);
@@ -139,6 +139,36 @@ function normalizarEntradaNumerica(input) {
     }
   });
 }
+
+// Função para obter o valor da rotação formatado (inteiro + fração)
+function obterRotacaoFormatada() {
+  const inteiro = document.getElementById('rotacaoInteiro').value;
+  const fracao = document.getElementById('rotacaoFracao').value;
+  
+  if (!inteiro) return '';
+  
+  if (fracao) {
+    return `${inteiro} ${fracao}`;
+  }
+  
+  return inteiro;
+}
+
+// Função para obter valor formatado de um elemento
+function obterValorFormatado(elemento) {
+  const valor = elemento.value;
+  
+  if (elemento.name === 'entrega') {
+    return valor;
+  }
+  
+  const decimal = converterFracaoParaDecimal(valor);
+  return decimal > 0 ? decimal.toString().replace('.', ',') : valor;
+}
+
+// ========================================
+// FUNÇÕES DE ARMAZENAMENTO LOCAL
+// ========================================
 
 let manutencaoData = JSON.parse(localStorage.getItem('manutencaoData') || "[]");
 let ocorrenciaData = JSON.parse(localStorage.getItem('ocorrenciaData') || "[]");
@@ -203,38 +233,9 @@ function renderizarOcorrencias() {
   });
 }
 
-// Função para formatar número para exibição (mantida para outros campos)
-function formatarNumero(numero) {
-  if (isNaN(numero) || numero === 0) return '';
-  return numero.toFixed(2).replace('.', ',');
-}
-
-// Função para obter o valor da rotação formatado (inteiro + fração)
-function obterRotacaoFormatada() {
-  const inteiro = document.getElementById('rotacaoInteiro').value;
-  const fracao = document.getElementById('rotacaoFracao').value;
-  
-  if (!inteiro) return '';
-  
-  if (fracao) {
-    return `${inteiro} ${fracao}`;
-  }
-  
-  return inteiro;
-}
-
-function obterValorFormatado(elemento) {
-  const valor = elemento.value;
-  
-  // Para o campo de entrega, apenas retorna o valor já formatado
-  if (elemento.name === 'entrega') {
-    return valor;
-  }
-  
-  // Para outros campos, converte e formata
-  const decimal = converterFracaoParaDecimal(valor);
-  return decimal > 0 ? decimal.toString().replace('.', ',') : valor;
-}
+// ========================================
+// FUNÇÃO DE ENVIO PARA WHATSAPP
+// ========================================
 
 function enviarWhatsapp() {
   const form = document.forms['operacaoForm'];
@@ -295,25 +296,6 @@ function enviarWhatsapp() {
   window.open(link, "_blank");
 }
 
-window.onload = () => {
-  horaArredondada();
-  calcularColheita();
-  renderizarManutencao();
-  renderizarOcorrencias();
-  
-  // Aplica máscara de formatação automática ao campo de Projeção de Entrega
-  const campoEntrega = document.getElementById('entrega');
-  if (campoEntrega) {
-    aplicarMascaraEntrega(campoEntrega);
-  }
-  
-  // Aplicar normalização para os outros campos numéricos (exceto entrega e rotação)
-  const camposNumericos = document.querySelectorAll('input[name="entrada"], input[name="saida"], input[name="retorno"], input[name="raio"], input[name="conjuntos"], input[name="densidade"]');
-  camposNumericos.forEach(campo => {
-    normalizarEntradaNumerica(campo);
-  });
-};
-
 // ========================================
 // FUNÇÕES PARA GERAR E COMPARTILHAR IMAGEM
 // ========================================
@@ -323,47 +305,39 @@ function gerarImagem() {
   const dataHora = document.getElementById('horaAtual').textContent;
   const rotacao = obterRotacaoFormatada();
   
-  // Cria canvas A4 (210mm x 297mm em 300 DPI = 2480 x 3508 pixels)
   const canvas = document.getElementById('canvasRelatorio');
   const ctx = canvas.getContext('2d');
   
-  // Define dimensões A4 em alta resolução
   canvas.width = 2480;
   canvas.height = 3508;
   
-  // Fundo branco
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, canvas.width, canvas.height);
   
-  // Variáveis de layout
   let y = 100;
   const margin = 150;
   const contentWidth = canvas.width - (margin * 2);
   
-  // ===== CABEÇALHO COM LOGO =====
+  // Cabeçalho
   ctx.fillStyle = '#2c3e50';
   ctx.fillRect(0, 0, canvas.width, 350);
   
-  // Carrega e desenha a logo
   const logo = new Image();
   logo.crossOrigin = 'anonymous';
-  logo.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABLAAAADICAYAAADKyTgzAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKT2lDQ1BQaG90b3Nob3AgSUNDIHByb2ZpbGUAAHjanVNnVFPpFj333vRCS4iAlEtvUhUIIFJCi4AUkSYqIQkQSogMABBAAQAAlBAQgFCAAiABBAAUAAQABAAEAASAIAAIDwUABAAEAAEAAgAkACAABAAAQABAAgABACAAJwBAAAAAABAACAAFABAACwAQAAIAEgAIAAAABAADABAACgANABQAHAAeAB4ABAAIAAwAEAAeABIAHAARABQAFAAUABAAHwAUAAwACAAAAAAACACBAAAAAAABAAEAAAABAAEAAQAAAAEAAAAAAAAAAAAAAAAAAAAAAEAAEAAMAAAAAAACAAIAAgAIAAcABAAEAAcACAAYAAgAEAAIAAwADAAUABQAFAAYABgAGgAcABwAHAAcACgAJAAoACgAKAAqACgAKgAsACgALgAuAC4ALgAuAC4ALgAuADAALgAwADAAMAAwADAAMAAwADAAOAA4ADgAOAA4ADgAOAA4ADgAQABAAEAAQABAAEAAQABAAEAAQABAAEAAQABAAEAARABEAEQARABEAEQARABEAEQARABEAEQARABIAEgASABIAEgASABIAEgASABIAEgASABIAEgASABIAEwATABMAEwATABMAEwATABMAEwATABMAEwATABMAFAAUABQAFAAUABQAFAAUABQAFAAUABQAFAAUABQAFQAVABUAFQAVABUAFQAVABUAFQAVABUAFQAVABYAFgAWABYAFgAWABYAFgAWABYAFgAWABYAFgAXABcAFwAXABcAFwAXABcAFwAXABcAFwAXABgAGAAYABgAGAAYABgAGAAYABgAGAAYABgAGAAYABkAGQAZABkAGQAZABkAGQAZABkAGQAZABkAGQAaABoAGgAaABoAGgAaABoAGgAaABoAGgAaABoAGwAbABsAGwAbABsAGwAbABsAGwAbABsAGwAbABwAHAAcABwAHAAcABwAHAAcABwAHAAcABwAHAAeAB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB8AHwAfAB8AHwAfAB8AHwAfAB8AHwAfAB8AHwAgACAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIQAhACEAIQAhACEAIQAhACEAIQAhACEAIQAiACIAIgAiACIAIgAiACIAIgAiACIAIgAiACMAIwAjACMAIwAjACMAIwAjACMAIwAjACMAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJAAkACUAJQAlACUAJQAlACUAJQAlACUAJQAlACUAJQAmACYAJgAmACYAJgAmACYAJgAmACYAJgAmACcAJwAnACcAJwAnACcAJwAnACcAJwAnACcAKAAoACgAKAAoACgAKAAoACgAKAAoACgAKAAoACkAKQApACkAKQApACkAKQApACkAKQApACkAKQAqACoAKgAqACoAKgAqACoAKgAqACoAKgAqACsAKwArACsAKwArACsAKwArACsAKwArACsALAAsACwALAAsACwALAAsACwALAAsACwALAAtAC0ALQAtAC0ALQAtAC0ALQAtAC0ALQAtAC4ALgAuAC4ALgAuAC4ALgAuAC4ALgAuAC8ALwAvAC8ALwAvAC8ALwAvAC8ALwAvAC8AMAAwADAAMAAwADAAMAAwADAAMAAwADAAMAAwADEAMQAxADEAMQAxADEAMQAxADEAMQAxADEAMgAyADIAMgAyADIAMgAyADIAMgAyADIAMgAzADMAMwAzADMAMwAzADMAMwAzADMAMwAzADQANAA0ADQANAA0ADQANAA0ADQANAA0ADQANQA1ADUANQA1ADUANQA1ADUANQA1ADUANQA1ADYANQA2ADYANQA2ADYANQA2ADYANQA2ADYANQA3ADcANwA3ADcANwA3ADcANwA3ADcANwA4ADgAOAA4ADgAOAA4ADgAOAA4ADgAOAA5ADkAOQA5ADkAOQA5ADkAOQA5ADkAOQA6ADoAOgA6ADoAOgA6ADoAOgA6ADoAOgA7ADsAOwA7ADsAOwA7ADsAOwA7ADsAOwA8ADwAPAA8ADwAPAA8ADwAPAA8ADwAPAA9AD0APQA9AD0APQA9AD0APQA9AD0APQA+AD4APgA+AD4APgA+AD4APgA+AD4APgA/AD8APwA/AD8APwA/AD8APwA/AD8APwBAAEAAQABAAEAAQABAAEAAQABAAEAAQABBAEEAQQBBAEEAQQBBAEEAQQBBAEEAQQBCAEIAQgBCAEIAQgBCAEIAQgBCAEIAQgBDAEMAQwBDAEMAQwBDAEMAQwBDAEMAQwBEAEQARABEAEQARABEAEQARABEAEQARABFAEUARQBFAEUARQBFAEUARQBFAEUARQBGAEYARgBGAEYARgBGAEYARgBGAEYARgBHAEcARwBHAEcARwBHAEcARwBHAEcARwBIAEgASABIAEgASABIAEgASABIAEgASABJAEkASQBJAEkASQBJAEkASQBJAEkASQBKAEoASgBKAEoASgBKAEoASgBKAEoASgBLAEsASwBLAEsASwBLAEsASwBLAEsASwBMAEwATABMAEwATABMAEwATABMAEwATABNAE0ATQBNAE0ATQBNAE0ATQBNAE0ATQBOAEUATgBOAE4ATgBOAE4ATgBOAE4ATgBPAE8ATwBPAE8ATwBPAE8ATwBPAE8ATwBQAFAAUABQAFAAUABQAFAAUABQAFAAUABRAFEAUQBRAFEAUQBRAFEAUQBRAFEAUQBSAFIAUgBSAFIAUgBSAFIAUgBSAFIAUgBTAFMAUwBTAFMAUwBTAFMAUwBTAFMAUwBUAFQAVABUAFQAVABUAFQAVABUAFQAVABVAFUAVQBVAFUAVQBVAFUAVQBVAFUAVQBWAFYAVgBWAFYAVgBWAFYAVgBWAFYAVgBXAFcAVwBXAFcAVwBXAFcAVwBXAFcAVwBYAFgAWABYAFgAWABYAFgAWABYAFgAWABZAFkAWQBZAFkAWQBZAFkAWQBZAFkAWQBaAFoAWgBaAFoAWgBaAFoAWgBaAFoAWgBbAFsAWwBbAFsAWwBbAFsAWwBbAFsAWwBcAFwAXABcAFwAXABcAFwAXABcAFwAXABdAF0AXQBdAF0AXQBdAF0AXQBdAF0AXQBeAF4AXgBeAF4AXgBeAF4AXgBeAF4AXgBfAF8AXwBfAF8AXwBfAF8AXwBfAF8AXwBgAGAAYABgAGAAYABgAGAAYABgAGAAYABhAGEAYQBhAGEAYQBhAGEAYQBhAGEAYQBiAGIAYgBiAGIAYgBiAGIAYgBiAGIAYgBjAGMAYwBjAGMAYwBjAGMAYwBjAGMAYwBkAGQAZABkAGQAZABkAGQAZABkAGQAZABlAGUAZQBlAGUAZQBlAGUAZQBlAGUAZQBmAGYAZgBmAGYAZgBmAGYAZgBmAGYAZgBnAGcAZwBnAGcAZwBnAGcAZwBnAGcAZwBoAGgAaABoAGgAaABoAGgAaABoAGgAaABpAGkAaQBpAGkAaQBpAGkAaQBpAGkAaQBqAGoAagBqAGoAagBqAGoAagBqAGoAagBrAGsAawBrAGsAawBrAGsAawBrAGsAawBsAGwAbABsAGwAbABsAGwAbABsAGwAbABtAG0AbQBtAG0AbQBtAG0AbQBtAG0AbQBuAG4AbgBuAG4AbgBuAG4AbgBuAG4AbgBvAG8AbwBvAG8AbwBvAG8AbwBvAG8AbwBwAHAAcABwAHAAcABwAHAAcABwAHAAcABxAHEAcQBxAHEAcQBxAHEAcQBxAHEAcQByAHIAcgByAHIAcgByAHIAcgByAHIAcgBzAHMAcwBzAHMAcwBzAHMAcwBzAHMAcwB0AHQAdAB0AHQAdAB0AHQAdAB0AHQAdAB1AHUAdQB1AHUAdQB1AHUAdQB1AHUAdQB2AHYAdgB2AHYAdgB2AHYAdgB2AHYAdgB3AHcAdwB3AHcAdwB3AHcAdwB3AHcAdwB4AHgAeAB4AHgAeAB4AHgAeAB4AHgAeAB5AHkAeQB5AHkAeQB5AHkAeQB5AHkAeQB6AHoAegB6AHoAegB6AHoAegB6AHoAegB7AHsAewB7AHsAewB7AHsAewB7AHsAewB8AHwAfAB8AHwAfAB8AHwAfAB8AHwAfAB9AH0AfQB9AH0AfQB9AH0AfQB9AH0AfQB+AH4AfgB+AH4AfgB+AH4AfgB+AH4AfgB/AH8AfwB/AH8AfwB/AH8AfwB/AH8AfwCAAIAAgACAAIAAgACAAIAAgACAAIAAgACAAIEAgQCBAIEAgQCBAIEAgQCBAIEAgQCBAIIAggCCAIIAggCCAIIAggCCAIIAggCCAIMAgwCDAIMAgwCDAIMAgwCDAIMAgwCDAIQAhACEAIQAhACEAIQAhACEAIQAhACEAIUAhQCFAIUAhQCFAIUAhQCFAIUAhQCFAIYAhgCGAIYAhgCGAIYAhgCGAIYAhgCGAIcAhwCHAIcAhwCHAIcAhwCHAIcAhwCHAIgAiACIAIgAiACIAIgAiACIAIgAiACIAIkAiQCJAIkAiQCJAIkAiQCJAIkAiQCJAIoAigCKAIoAigCKAIoAigCKAIoAigCKAIsAiwCLAIsAiwCLAIsAiwCLAIsAiwCLAIwAjACMAIwAjACMAIwAjACMAIwAjACMAI0AjQCNAI0AjQCNAI0AjQCNAI0AjQCNAI4AjgCOAI4AjgCOAI4AjgCOAI4AjgCOAI8AjwCPAI8AjwCPAI8AjwCPAI8AjwCPAJAAkACQAJAAkACQAJAAkACQAJAAkACQAJEAkQCRAJEAkQCRAJEAkQCRAJEAkQCRAJIAkgCSAJIAkgCSAJIAkgCSAJIAkgCSAJIAkwCTAJMAkwCTAJMAkwCTAJMAkwCTAJMAlACUAJQAlACUAJQAlACUAJQAlACUAJQAlQCVAJUAlQCVAJUAlQCVAJUAlQCVAJUAlgCWAJYAlgCWAJYAlgCWAJYAlgCWAJYAlwCXAJcAlwCXAJcAlwCXAJcAlwCXAJcAmACYAJgAmACYAJgAmACYAJgAmACYAJgAmQCZAJkAmQCZAJkAmQCZAJkAmQCZAJkAmgCaAJoAmgCaAJoAmgCaAJoAmgCaAJoAmwCbAJsAmwCbAJsAmwCbAJsAmwCbAJsAnACcAJwAnACcAJwAnACcAJwAnACcAJwAnQCdAJ0AnQCdAJ0AnQCdAJ0AnQCdAJ0AngCeAJ4AngCeAJ4AngCeAJ4AngCeAJ4AnwCfAJ8AnwCfAJ8AnwCfAJ8AnwCfAJ8AoAC';
+  logo.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==';
   
   logo.onload = function() {
-    // Desenha a logo no cabeçalho (centralizada)
     const logoWidth = 800;
     const logoHeight = 180;
     const logoX = (canvas.width - logoWidth) / 2;
     const logoY = 60;
     ctx.drawImage(logo, logoX, logoY, logoWidth, logoHeight);
     
-    // Título abaixo da logo
     ctx.font = 'bold 75px Arial';
     ctx.fillStyle = '#ffffff';
     ctx.textAlign = 'center';
     ctx.fillText('ATUALIZAÇÃO OPERACIONAL', canvas.width / 2, 290);
     
-    // Data/Hora com destaque
     ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
     ctx.fillRect(canvas.width / 2 - 400, 310, 800, 60);
     ctx.fillStyle = '#2c3e50';
@@ -372,12 +346,10 @@ function gerarImagem() {
     
     y = 450;
     
-    // ===== DADOS OPERACIONAIS COM VISUAL MELHORADO =====
     ctx.fillStyle = '#2c3e50';
     ctx.font = 'bold 60px Arial';
     ctx.textAlign = 'left';
     
-    // Box com sombra para o título
     ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
     ctx.shadowBlur = 10;
     ctx.shadowOffsetX = 0;
@@ -387,14 +359,12 @@ function gerarImagem() {
     
     y += 90;
     
-    // Box de fundo com gradiente simulado
     const gradient = ctx.createLinearGradient(margin, y, margin, y + 950);
     gradient.addColorStop(0, '#ffffff');
     gradient.addColorStop(1, '#f8f9fa');
     ctx.fillStyle = gradient;
     ctx.fillRect(margin, y, contentWidth, 950);
     
-    // Borda mais destacada
     ctx.strokeStyle = '#3498db';
     ctx.lineWidth = 8;
     ctx.strokeRect(margin, y, contentWidth, 950);
@@ -416,7 +386,6 @@ function gerarImagem() {
     ];
     
     dados.forEach((item, index) => {
-      // Fundo alternado para melhor leitura
       if (index % 2 === 0) {
         ctx.fillStyle = 'rgba(52, 152, 219, 0.05)';
         ctx.fillRect(margin + 20, y - 45, contentWidth - 40, 90);
@@ -437,14 +406,12 @@ function gerarImagem() {
     
     y += 60;
     
-    // ===== DUAS COLUNAS: MANUTENÇÃO E SOCORROS =====
     const colWidth = (contentWidth - 60) / 2;
     const col1X = margin;
     const col2X = margin + colWidth + 60;
     let y1 = y;
     let y2 = y;
     
-    // COLUNA 1 - MANUTENÇÃO (Visual melhorado)
     ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
     ctx.shadowBlur = 10;
     ctx.shadowOffsetX = 0;
@@ -455,7 +422,7 @@ function gerarImagem() {
     ctx.shadowBlur = 0;
     y1 += 75;
     
-    // Box com gradiente
+    const heightManutencao = Math.max(500, manutencaoData.length * 280 + 100);
     const gradientMan = ctx.createLinearGradient(col1X, y1, col1X, y1 + heightManutencao);
     gradientMan.addColorStop(0, '#fff3e0');
     gradientMan.addColorStop(1, '#ffe0b2');
@@ -475,7 +442,6 @@ function gerarImagem() {
       ctx.textAlign = 'left';
     } else {
       manutencaoData.forEach((item, index) => {
-        // Card individual para cada manutenção
         if (index > 0) {
           ctx.strokeStyle = '#e67e22';
           ctx.lineWidth = 2;
@@ -502,7 +468,6 @@ function gerarImagem() {
       });
     }
     
-    // COLUNA 2 - SOCORROS (Visual melhorado)
     ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
     ctx.shadowBlur = 10;
     ctx.shadowOffsetX = 0;
@@ -513,7 +478,7 @@ function gerarImagem() {
     ctx.shadowBlur = 0;
     y2 += 75;
     
-    // Box com gradiente
+    const heightOcorrencia = Math.max(500, ocorrenciaData.length * 280 + 100);
     const gradientOco = ctx.createLinearGradient(col2X, y2, col2X, y2 + heightOcorrencia);
     gradientOco.addColorStop(0, '#ffebee');
     gradientOco.addColorStop(1, '#ffcdd2');
@@ -533,7 +498,6 @@ function gerarImagem() {
       ctx.textAlign = 'left';
     } else {
       ocorrenciaData.forEach((item, index) => {
-        // Card individual para cada ocorrência
         if (index > 0) {
           ctx.strokeStyle = '#e74c3c';
           ctx.lineWidth = 2;
@@ -560,7 +524,6 @@ function gerarImagem() {
       });
     }
     
-    // Ajusta altura do canvas baseado no conteúdo
     const finalHeight = Math.max(y1, y2) + 300;
     if (finalHeight > canvas.height) {
       const tempCanvas = document.createElement('canvas');
@@ -575,17 +538,14 @@ function gerarImagem() {
       ctx.drawImage(tempCanvas, 0, 0);
     }
     
-    // ===== RODAPÉ COM VISUAL MELHORADO =====
     const footerY = canvas.height - 180;
     
-    // Gradiente no rodapé
     const gradientFooter = ctx.createLinearGradient(0, footerY, 0, canvas.height);
     gradientFooter.addColorStop(0, '#34495e');
     gradientFooter.addColorStop(1, '#2c3e50');
     ctx.fillStyle = gradientFooter;
     ctx.fillRect(0, footerY, canvas.width, 180);
     
-    // Linha decorativa
     ctx.strokeStyle = '#3498db';
     ctx.lineWidth = 5;
     ctx.beginPath();
@@ -601,11 +561,9 @@ function gerarImagem() {
     ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
     ctx.fillText(`📅 ${new Date().toLocaleString('pt-BR')}`, canvas.width / 2, footerY + 130);
     
-    // Exibe o modal com a imagem
     document.getElementById('modalImagem').style.display = 'block';
   };
   
-  // Se a imagem não carregar, gera sem logo
   logo.onerror = function() {
     console.log('Logo não carregada, gerando relatório sem logo...');
     gerarRelatorioSemLogo();
@@ -613,331 +571,9 @@ function gerarImagem() {
 }
 
 function gerarRelatorioSemLogo() {
-  const form = document.forms['operacaoForm'];
-  const dataHora = document.getElementById('horaAtual').textContent;
-  const rotacao = obterRotacaoFormatada();
-  const canvas = document.getElementById('canvasRelatorio');
-  const ctx = canvas.getContext('2d');
-  
-  canvas.width = 2480;
-  canvas.height = 3508;
-  
-  ctx.fillStyle = '#ffffff';
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
-  
-  let y = 100;
-  const margin = 150;
-  const contentWidth = canvas.width - (margin * 2);
-  
-  // Cabeçalho simples sem logo
-  ctx.fillStyle = '#2c3e50';
-  ctx.fillRect(0, 0, canvas.width, 300);
-  
-  ctx.font = 'bold 80px Arial';
-  ctx.fillStyle = '#ffffff';
-  ctx.textAlign = 'center';
-  ctx.fillText('📊 ATUALIZAÇÃO OPERACIONAL', canvas.width / 2, 150);
-  
-  ctx.font = '45px Arial';
-  ctx.fillText(dataHora, canvas.width / 2, 230);
-  
-  y = 400;
-  
-  // Restante do código igual (dados, colunas, rodapé)
-  ctx.fillStyle = '#2c3e50';
-  ctx.font = 'bold 55px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText('DADOS OPERACIONAIS', margin, y);
-  
-  y += 80;
-  
-  ctx.fillStyle = '#f8f9fa';
-  ctx.fillRect(margin, y, contentWidth, 900);
-  ctx.strokeStyle = '#3498db';
-  ctx.lineWidth = 5;
-  ctx.strokeRect(margin, y, contentWidth, 900);
-  
-  y += 70;
-  
-  const dados = [
-    { emoji: '📈', label: 'Projeção de Entrega:', valor: form.entrega.value + ' Ton' },
-    { emoji: '➡️', label: 'Entrada de CVs:', valor: obterValorFormatado(form.entrada) },
-    { emoji: '⬅️', label: 'Saída de CVs:', valor: obterValorFormatado(form.saida) },
-    { emoji: '🚛', label: 'Retorno de CVs Usina:', valor: obterValorFormatado(form.retorno) },
-    { emoji: '🌾', label: 'Colheita:', valor: form.colheita.value },
-    { emoji: '📍', label: 'Raio Médio:', valor: obterValorFormatado(form.raio) + ' Km' },
-    { emoji: '🔄', label: 'Rotação Média:', valor: rotacao + ' Voltas' },
-    { emoji: '🚛', label: 'Conjuntos:', valor: obterValorFormatado(form.conjuntos) },
-    { emoji: '⚖️', label: 'Densidade:', valor: obterValorFormatado(form.densidade) }
-  ];
-  
-  dados.forEach((item) => {
-    ctx.fillStyle = '#555';
-    ctx.font = '42px Arial';
-    ctx.fillText(`${item.emoji} ${item.label}`, margin + 40, y);
-    
-    ctx.fillStyle = '#2c3e50';
-    ctx.font = 'bold 48px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText(item.valor || '-', canvas.width - margin - 40, y);
-    ctx.textAlign = 'left';
-    
-    y += 95;
-  });
-  
-  y += 60;
-  
-  // Duas colunas
-  const colWidth = (contentWidth - 60) / 2;
-  const col1X = margin;
-  const col2X = margin + colWidth + 60;
-  let y1 = y;
-  let y2 = y;
-  
-  // Manutenção
-  ctx.fillStyle = '#e67e22';
-  ctx.font = 'bold 50px Arial';
-  ctx.fillText('🛠️ MANUTENÇÃO', col1X, y1);
-  y1 += 70;
-  
-  ctx.fillStyle = '#fff3e0';
-  const hMan = Math.max(500, manutencaoData.length * 280 + 100);
-  ctx.fillRect(col1X, y1, colWidth, hMan);
-  ctx.strokeStyle = '#e67e22';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(col1X, y1, colWidth, hMan);
-  y1 += 60;
-  
-  if (manutencaoData.length === 0) {
-    ctx.fillStyle = '#999';
-    ctx.font = 'italic 38px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Nenhuma', col1X + colWidth / 2, y1 + 100);
-    ctx.textAlign = 'left';
-  } else {
-    manutencaoData.forEach((item) => {
-      ctx.fillStyle = '#555';
-      ctx.font = '36px Arial';
-      ctx.fillText(`Frota: ${item.frota || '-'}`, col1X + 30, y1);
-      y1 += 50;
-      ctx.fillText(`Local: ${item.local || '-'}`, col1X + 30, y1);
-      y1 += 50;
-      ctx.fillText(`Desc: ${item.descricao || '-'}`, col1X + 30, y1);
-      y1 += 50;
-      ctx.fillText(`Status: ${item.status || '-'}`, col1X + 30, y1);
-      y1 += 80;
-    });
-  }
-  
-  // Ocorrências
-  ctx.fillStyle = '#e74c3c';
-  ctx.font = 'bold 50px Arial';
-  ctx.fillText('🆘 OCORRÊNCIAS', col2X, y2);
-  y2 += 70;
-  
-  ctx.fillStyle = '#ffebee';
-  const hOco = Math.max(500, ocorrenciaData.length * 280 + 100);
-  ctx.fillRect(col2X, y2, colWidth, hOco);
-  ctx.strokeStyle = '#e74c3c';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(col2X, y2, colWidth, hOco);
-  y2 += 60;
-  
-  if (ocorrenciaData.length === 0) {
-    ctx.fillStyle = '#999';
-    ctx.font = 'italic 38px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Nenhuma', col2X + colWidth / 2, y2 + 100);
-    ctx.textAlign = 'left';
-  } else {
-    ocorrenciaData.forEach((item) => {
-      ctx.fillStyle = '#555';
-      ctx.font = '36px Arial';
-      ctx.fillText(`Frota: ${item.frota || '-'}`, col2X + 30, y2);
-      y2 += 50;
-      ctx.fillText(`Local: ${item.local || '-'}`, col2X + 30, y2);
-      y2 += 50;
-      ctx.fillText(`Desc: ${item.descricao || '-'}`, col2X + 30, y2);
-      y2 += 50;
-      ctx.fillText(`Status: ${item.status || '-'}`, col2X + 30, y2);
-      y2 += 80;
-    });
-  }
-  
-  const finalHeight = Math.max(y1, y2) + 300;
-  if (finalHeight > 3508) {
-    canvas.height = finalHeight;
-  }
-  
-  // Rodapé
-  const footerY = canvas.height - 150;
-  ctx.fillStyle = '#2c3e50';
-  ctx.fillRect(0, footerY, canvas.width, 150);
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '40px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Desenvolvido por Everton Tezzon Ferreira', canvas.width / 2, footerY + 70);
-  ctx.font = '32px Arial';
-  ctx.fillText(new Date().toLocaleString('pt-BR'), canvas.width / 2, footerY + 115);
-  
-  document.getElementById('modalImagem').style.display = 'block';
-}
-  
-  // ===== DADOS OPERACIONAIS =====
-  ctx.fillStyle = '#2c3e50';
-  ctx.font = 'bold 55px Arial';
-  ctx.textAlign = 'left';
-  ctx.fillText('DADOS OPERACIONAIS', margin, y);
-  
-  y += 80;
-  
-  // Box de fundo para dados
-  ctx.fillStyle = '#f8f9fa';
-  ctx.fillRect(margin, y, contentWidth, 900);
-  ctx.strokeStyle = '#3498db';
-  ctx.lineWidth = 5;
-  ctx.strokeRect(margin, y, contentWidth, 900);
-  
-  y += 70;
-  ctx.fillStyle = '#2c3e50';
-  ctx.font = '45px Arial';
-  
-  const dados = [
-    { emoji: '📈', label: 'Projeção de Entrega:', valor: obterValorFormatado(form.entrega) + ' Ton' },
-    { emoji: '➡️', label: 'Entrada de CVs (Usina):', valor: obterValorFormatado(form.entrada) },
-    { emoji: '⬅️', label: 'Saída de CVs (Usina):', valor: obterValorFormatado(form.saida) },
-    { emoji: '🚛', label: 'Retorno Usina:', valor: obterValorFormatado(form.retorno) },
-    { emoji: '🌾', label: 'Colheita (Carregamento/Hora):', valor: form.colheita.value },
-    { emoji: '📍', label: 'Raio Médio:', valor: obterValorFormatado(form.raio) + ' Km' },
-    { emoji: '🔄', label: 'Rotação Média na Usina:', valor: obterValorFormatado(form.rotacao) + ' Voltas' },
-    { emoji: '🚛', label: 'Conjuntos Carregados:', valor: obterValorFormatado(form.conjuntos) },
-    { emoji: '⚖️', label: 'Densidade Média:', valor: obterValorFormatado(form.densidade) }
-  ];
-  
-  dados.forEach((item, index) => {
-    ctx.fillStyle = '#555';
-    ctx.font = '42px Arial';
-    ctx.fillText(`${item.emoji} ${item.label}`, margin + 40, y);
-    
-    ctx.fillStyle = '#2c3e50';
-    ctx.font = 'bold 48px Arial';
-    ctx.textAlign = 'right';
-    ctx.fillText(item.valor || '-', canvas.width - margin - 40, y);
-    ctx.textAlign = 'left';
-    
-    y += 95;
-  });
-  
-  y += 60;
-  
-  // ===== DUAS COLUNAS: MANUTENÇÃO E SOCORROS =====
-  const colWidth = (contentWidth - 60) / 2;
-  const col1X = margin;
-  const col2X = margin + colWidth + 60;
-  let y1 = y; // Y da coluna 1
-  let y2 = y; // Y da coluna 2
-  
-  // COLUNA 1 - MANUTENÇÃO
-  ctx.fillStyle = '#e67e22';
-  ctx.font = 'bold 50px Arial';
-  ctx.fillText('🛠️ VEÍCULOS EM MANUTENÇÃO', col1X, y1);
-  y1 += 70;
-  
-  ctx.fillStyle = '#fff3e0';
-  const heightManutencao = Math.max(500, manutencaoData.length * 280 + 100);
-  ctx.fillRect(col1X, y1, colWidth, heightManutencao);
-  ctx.strokeStyle = '#e67e22';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(col1X, y1, colWidth, heightManutencao);
-  
-  y1 += 60;
-  
-  if (manutencaoData.length === 0) {
-    ctx.fillStyle = '#999';
-    ctx.font = 'italic 38px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Nenhuma manutenção', col1X + colWidth / 2, y1 + 100);
-    ctx.textAlign = 'left';
-  } else {
-    manutencaoData.forEach((item, index) => {
-      ctx.fillStyle = '#555';
-      ctx.font = '36px Arial';
-      ctx.fillText(`🚛 Frota: ${item.frota || '-'}`, col1X + 30, y1);
-      y1 += 50;
-      ctx.fillText(`📍 Local: ${item.local || '-'}`, col1X + 30, y1);
-      y1 += 50;
-      ctx.fillText(`🔧 Descrição: ${item.descricao || '-'}`, col1X + 30, y1);
-      y1 += 50;
-      ctx.fillText(`🗒️ Status: ${item.status || '-'}`, col1X + 30, y1);
-      y1 += 80;
-    });
-  }
-  
-  // COLUNA 2 - SOCORROS
-  ctx.fillStyle = '#e74c3c';
-  ctx.font = 'bold 50px Arial';
-  ctx.fillText('🆘 OCORRÊNCIAS', col2X, y2);
-  y2 += 70;
-  
-  ctx.fillStyle = '#ffebee';
-  const heightOcorrencia = Math.max(500, ocorrenciaData.length * 280 + 100);
-  ctx.fillRect(col2X, y2, colWidth, heightOcorrencia);
-  ctx.strokeStyle = '#e74c3c';
-  ctx.lineWidth = 4;
-  ctx.strokeRect(col2X, y2, colWidth, heightOcorrencia);
-  
-  y2 += 60;
-  
-  if (ocorrenciaData.length === 0) {
-    ctx.fillStyle = '#999';
-    ctx.font = 'italic 38px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('Nenhuma ocorrência', col2X + colWidth / 2, y2 + 100);
-    ctx.textAlign = 'left';
-  } else {
-    ocorrenciaData.forEach((item, index) => {
-      ctx.fillStyle = '#555';
-      ctx.font = '36px Arial';
-      ctx.fillText(`🚛 Frota: ${item.frota || '-'}`, col2X + 30, y2);
-      y2 += 50;
-      ctx.fillText(`📍 Local: ${item.local || '-'}`, col2X + 30, y2);
-      y2 += 50;
-      ctx.fillText(`🔧 Descrição: ${item.descricao || '-'}`, col2X + 30, y2);
-      y2 += 50;
-      ctx.fillText(`🗒️ Status: ${item.status || '-'}`, col2X + 30, y2);
-      y2 += 80;
-    });
-  }
-  
-  // Ajusta altura do canvas baseado no conteúdo
-  const finalHeight = Math.max(y1, y2) + 300;
-  if (finalHeight > canvas.height) {
-    const tempCanvas = document.createElement('canvas');
-    tempCanvas.width = canvas.width;
-    tempCanvas.height = canvas.height;
-    const tempCtx = tempCanvas.getContext('2d');
-    tempCtx.drawImage(canvas, 0, 0);
-    
-    canvas.height = finalHeight;
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(tempCanvas, 0, 0);
-  }
-  
-  // ===== RODAPÉ =====
-  const footerY = canvas.height - 150;
-  ctx.fillStyle = '#2c3e50';
-  ctx.fillRect(0, footerY, canvas.width, 150);
-  
-  ctx.fillStyle = '#ffffff';
-  ctx.font = '40px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('Desenvolvido por Everton Tezzon Ferreira', canvas.width / 2, footerY + 70);
-  ctx.font = '32px Arial';
-  ctx.fillText(new Date().toLocaleString('pt-BR'), canvas.width / 2, footerY + 115);
-  
-  // Exibe o modal com a imagem
-  document.getElementById('modalImagem').style.display = 'block';
+  // Função alternativa caso a logo não carregue
+  console.log('Gerando relatório sem logo...');
+  gerarImagem();
 }
 
 function fecharModal() {
@@ -957,14 +593,11 @@ async function compartilharImagem() {
   const canvas = document.getElementById('canvasRelatorio');
   
   try {
-    // Gera o blob da imagem
     const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png', 1.0));
     
-    // Nome do arquivo com data/hora
     const dataHora = new Date().toLocaleString('pt-BR').replace(/[/:]/g, '-').replace(/,/g, '');
     const nomeArquivo = `relatorio-operacional-${dataHora}.png`;
     
-    // Baixa a imagem automaticamente
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
     link.download = nomeArquivo;
@@ -973,10 +606,8 @@ async function compartilharImagem() {
     document.body.removeChild(link);
     URL.revokeObjectURL(link.href);
     
-    // Aguarda 500ms para garantir que o download iniciou
     await new Promise(resolve => setTimeout(resolve, 500));
     
-    // Mensagem para o WhatsApp
     const mensagemWhatsApp = `📊 *RELATÓRIO OPERACIONAL*
 
 Segue em anexo o relatório operacional atualizado.
@@ -985,16 +616,13 @@ _Gerado em: ${new Date().toLocaleString('pt-BR')}_
 
 📎 Arquivo: ${nomeArquivo}`;
     
-    // Abre o WhatsApp com a mensagem
     const linkWhatsApp = `https://wa.me/?text=${encodeURIComponent(mensagemWhatsApp)}`;
     window.open(linkWhatsApp, '_blank');
     
-    // Fecha o modal após 1 segundo
     setTimeout(() => {
       fecharModal();
     }, 1000);
     
-    // Mostra instrução para o usuário
     alert('✅ Imagem baixada com sucesso!\n\n📱 O WhatsApp será aberto.\n\n💡 Dica: Anexe a imagem que acabou de baixar à conversa do WhatsApp.');
     
   } catch (error) {
@@ -1002,3 +630,24 @@ _Gerado em: ${new Date().toLocaleString('pt-BR')}_
     alert('❌ Erro ao gerar imagem.\n\n💡 Tente usar o botão "Baixar PNG" e envie manualmente pelo WhatsApp.');
   }
 }
+
+// ========================================
+// INICIALIZAÇÃO
+// ========================================
+
+window.onload = () => {
+  horaArredondada();
+  calcularColheita();
+  renderizarManutencao();
+  renderizarOcorrencias();
+  
+  const campoEntrega = document.getElementById('entrega');
+  if (campoEntrega) {
+    aplicarMascaraEntrega(campoEntrega);
+  }
+  
+  const camposNumericos = document.querySelectorAll('input[name="entrada"], input[name="saida"], input[name="retorno"], input[name="raio"], input[name="conjuntos"], input[name="densidade"]');
+  camposNumericos.forEach(campo => {
+    normalizarEntradaNumerica(campo);
+  });
+};

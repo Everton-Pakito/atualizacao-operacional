@@ -50,22 +50,6 @@
       margin-top: 2px;
       font-style: italic;
     }
-    .rotacao-input {
-      position: relative;
-    }
-    .rotacao-input::after {
-      content: "Ex: 6 1/4, 5,5 ou 5.75";
-      position: absolute;
-      right: 10px;
-      top: 50%;
-      transform: translateY(-50%);
-      font-size: 0.7rem;
-      color: #999;
-      pointer-events: none;
-      background: white;
-      padding: 2px 5px;
-      border-radius: 3px;
-    }
   </style>
 </head>
 <body>
@@ -80,8 +64,8 @@
         <div class="form-group">
           <div class="input-group">
             <label>📈 Projeção de Entrega (Ton):</label>
-            <input type="text" name="entrega" inputmode="decimal" pattern="[0-9]*" placeholder="Ex: 25.236,50" required />
-            <div class="input-helper">Use ponto (.) para milhares e vírgula (,) para decimais</div>
+            <input type="text" name="entrega" id="entrega" inputmode="decimal" pattern="[0-9]*" placeholder="Ex: 25.236,50" required />
+            <div class="input-helper">A formatação será aplicada automaticamente</div>
           </div>
           <div class="input-group">
             <label>➡️ Entrada de CVs (Usina):</label>
@@ -107,10 +91,18 @@
             <input type="text" name="raio" inputmode="decimal" pattern="[0-9]*" />
             <div class="input-helper">Use vírgula (,) ou ponto (.) para decimais</div>
           </div>
-          <div class="input-group rotacao-input">
+          <div class="input-group">
             <label>🔄 Rotação Média na Usina (Voltas):</label>
-            <input type="text" name="rotacao" inputmode="text" placeholder="Ex: 6 1/4 ou 5,75" />
-            <div class="input-helper">Aceita frações (6 1/4) ou decimais (5,75 ou 5.75)</div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <input type="text" name="rotacao_inteiro" id="rotacaoInteiro" inputmode="numeric" pattern="[0-9]*" placeholder="Ex: 6" style="flex: 1; max-width: 150px;" oninput="this.value=this.value.replace(/[^0-9]/g,'')" />
+              <select name="rotacao_fracao" id="rotacaoFracao" style="flex: 1; max-width: 150px; padding: 12px 15px; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 16px; background: #fafafa;">
+                <option value="">Sem fração</option>
+                <option value="¼">¼</option>
+                <option value="½">½</option>
+                <option value="¾">¾</option>
+              </select>
+            </div>
+            <div class="input-helper">Digite o número inteiro e selecione a fração (opcional)</div>
           </div>
           <div class="input-group">
             <label>🚛 Conjuntos Carregados:</label>
@@ -157,7 +149,6 @@
   </div>
   
   <script src="app.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script>
     // Registra o Service Worker para funcionalidade PWA
     if ('serviceWorker' in navigator) {
